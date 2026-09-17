@@ -1,0 +1,603 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="course-page">
+
+    <!-- =====================================================
+         PAGE HEADER
+    ====================================================== -->
+
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6">
+
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+                Courses
+            </h1>
+
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                Manage university courses and their academic assignments.
+            </p>
+        </div>
+
+        <button
+            type="button"
+            id="addCourseBtn"
+            class="inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold text-white transition"
+            style="background-color: #8B1538;"
+        >
+            <i class="fa-solid fa-plus"></i>
+            Add Course
+        </button>
+
+    </div>
+
+
+    <!-- =====================================================
+         SEARCH AND FILTERS
+    ====================================================== -->
+
+    <div class="course-toolbar">
+
+        <!-- Search -->
+
+        <div class="course-search">
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            <input
+                type="text"
+                id="courseSearch"
+                placeholder="Search courses..."
+                autocomplete="off"
+            >
+
+        </div>
+
+
+        <!-- Filters -->
+
+        <div class="course-filters">
+
+            <select id="courseFacultyFilter">
+                <option value="">
+                    All Faculties
+                </option>
+            </select>
+
+
+            <select id="courseDepartmentFilter">
+                <option value="">
+                    All Departments
+                </option>
+            </select>
+
+
+            <select id="courseSemesterFilter">
+                <option value="">
+                    All Semesters
+                </option>
+            </select>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         COURSES TABLE
+    ====================================================== -->
+
+    <div class="course-table-card">
+
+        <div class="course-table-wrapper">
+
+            <table class="course-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Course Code
+                        </th>
+
+                        <th>
+                            Course Name
+                        </th>
+
+                        <th>
+                            Faculty
+                        </th>
+
+                        <th>
+                            Department
+                        </th>
+
+                        <th>
+                            Semester
+                        </th>
+
+                        <th>
+                            Credit Hours
+                        </th>
+
+                        <th class="text-right">
+                            Actions
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="coursesTableBody">
+                    <!-- Courses loaded by JavaScript -->
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- =================================================
+             EMPTY STATE
+        ================================================== -->
+
+        <div
+            id="coursesEmptyState"
+            class="course-empty-state hidden"
+        >
+
+            <div class="course-empty-icon">
+                <i class="fa-solid fa-book"></i>
+            </div>
+
+            <h3>
+                No Courses Found
+            </h3>
+
+            <p>
+                There are no courses matching your search or filters.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     ADD / EDIT COURSE MODAL
+========================================================= -->
+
+<div
+    id="courseModal"
+    class="course-modal"
+    hidden
+>
+
+    <div class="course-modal-overlay"></div>
+
+
+    <div class="course-modal-dialog">
+
+        <!-- Modal Header -->
+
+        <div class="course-modal-header">
+
+            <div>
+
+                <h2 id="courseModalTitle">
+                    Add Course
+                </h2>
+
+                <p>
+                    Enter the course information below.
+                </p>
+
+            </div>
+
+
+            <button
+                type="button"
+                id="closeCourseModal"
+                class="course-modal-close"
+                aria-label="Close"
+            >
+
+                <i class="fa-solid fa-xmark"></i>
+
+            </button>
+
+        </div>
+
+
+        <!-- =================================================
+             COURSE FORM
+        ================================================== -->
+
+        <form id="courseForm">
+
+            <input
+                type="hidden"
+                id="courseId"
+            >
+
+
+            <!-- =================================================
+                 COURSE CODE
+                 AUTOMATICALLY GENERATED
+            ================================================== -->
+
+            <div class="course-form-group">
+
+                <label>
+                    Course Code
+                </label>
+
+
+                <div class="course-auto-code">
+
+                    <div class="course-auto-code-icon">
+
+                        <i class="fa-solid fa-hashtag"></i>
+
+                    </div>
+
+
+                    <div class="course-auto-code-content">
+
+                        <span
+                            class="course-auto-code-value"
+                            id="courseCode"
+                        >
+                            Auto-generated
+                        </span>
+
+
+                        <small>
+                            Course code will be generated automatically from the selected semester.
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 COURSE NAME
+            ================================================== -->
+
+            <div class="course-form-group">
+
+                <label for="courseName">
+
+                    Course Name
+
+                    <span>*</span>
+
+                </label>
+
+
+                <input
+                    type="text"
+                    id="courseName"
+                    placeholder="e.g. Introduction to Software Engineering"
+                    maxlength="150"
+                    required
+                >
+
+            </div>
+
+
+            <!-- =================================================
+                 FACULTY
+            ================================================== -->
+
+            <div class="course-form-group">
+
+                <label for="courseFaculty">
+
+                    Faculty
+
+                    <span>*</span>
+
+                </label>
+
+
+                <select
+                    id="courseFaculty"
+                    required
+                >
+
+                    <option value="">
+                        Select Faculty
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- =================================================
+                 DEPARTMENT
+            ================================================== -->
+
+            <div class="course-form-group">
+
+                <label for="courseDepartment">
+
+                    Department
+
+                    <span>*</span>
+
+                </label>
+
+
+                <select
+                    id="courseDepartment"
+                    required
+                >
+
+                    <option value="">
+                        Select Department
+                    </option>
+
+                </select>
+
+
+                <small class="course-field-help">
+                    Departments are filtered according to the selected faculty.
+                </small>
+
+            </div>
+
+
+            <!-- =================================================
+                 SEMESTER
+            ================================================== -->
+
+            <div class="course-form-group">
+
+                <label for="courseSemester">
+
+                    Semester
+
+                    <span>*</span>
+
+                </label>
+
+
+                <select
+                    id="courseSemester"
+                    required
+                >
+
+                    <option value="">
+                        Select Semester
+                    </option>
+
+                </select>
+
+
+                <small class="course-field-help">
+                    The course code will be generated automatically after selecting a semester.
+                </small>
+
+            </div>
+
+
+            <!-- =================================================
+                 AUTO COURSE CODE PREVIEW
+            ================================================== -->
+
+            <div
+                id="courseCodePreview"
+                class="course-code-preview"
+                hidden
+            >
+
+                <div class="course-code-preview-label">
+                    Generated Course Code
+                </div>
+
+
+                <div class="course-code-preview-value">
+                    <i class="fa-solid fa-barcode"></i>
+
+                    <span id="generatedCourseCode">
+                        ---
+                    </span>
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 CREDIT HOURS
+            ================================================== -->
+
+            <div class="course-form-group">
+
+                <label for="courseCreditHours">
+
+                    Credit Hours
+
+                    <span>*</span>
+
+                </label>
+
+
+                <input
+                    type="number"
+                    id="courseCreditHours"
+                    min="1"
+                    max="20"
+                    step="1"
+                    placeholder="e.g. 3"
+                    required
+                >
+
+            </div>
+
+
+            <!-- =================================================
+                 COURSE STATUS
+            ================================================== -->
+
+            <div class="course-form-group course-status-group">
+
+                <label>
+                    Course Status
+                </label>
+
+
+                <label class="course-switch">
+
+                    <input
+                        type="checkbox"
+                        id="courseIsActive"
+                        checked
+                    >
+
+
+                    <span class="course-switch-slider"></span>
+
+
+                    <span class="course-switch-label">
+                        Active
+                    </span>
+
+                </label>
+
+            </div>
+
+
+            <!-- =================================================
+                 FORM ACTIONS
+            ================================================== -->
+
+            <div class="course-form-actions">
+
+                <button
+                    type="button"
+                    id="cancelCourseBtn"
+                    class="course-btn course-btn-secondary"
+                >
+                    Cancel
+                </button>
+
+
+                <button
+                    type="submit"
+                    id="saveCourseBtn"
+                    class="course-btn course-btn-primary"
+                >
+
+                    <i class="fa-solid fa-floppy-disk"></i>
+
+                    Save Course
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     DELETE COURSE MODAL
+========================================================= -->
+
+<div
+    id="deleteCourseModal"
+    class="course-modal"
+    hidden
+>
+
+    <div class="course-modal-overlay"></div>
+
+
+    <div class="course-delete-dialog">
+
+        <div class="course-delete-icon">
+
+            <i class="fa-solid fa-trash"></i>
+
+        </div>
+
+
+        <h2>
+            Delete Course?
+        </h2>
+
+
+        <p>
+
+            Are you sure you want to delete
+
+            <strong id="deleteCourseName"></strong>?
+
+            This action cannot be undone.
+
+        </p>
+
+
+        <div class="course-delete-actions">
+
+            <button
+                type="button"
+                id="cancelDeleteCourse"
+                class="course-btn course-btn-secondary"
+            >
+                Cancel
+            </button>
+
+
+            <button
+                type="button"
+                id="confirmDeleteCourse"
+                class="course-btn course-btn-danger"
+            >
+
+                <i class="fa-solid fa-trash"></i>
+
+                Delete
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     COURSE CSS
+========================================================= -->
+
+<link
+    rel="stylesheet"
+    href="{% static 'css/academic-management/courses.css' %}"
+>
+
+
+<!-- =========================================================
+     COURSE JAVASCRIPT
+========================================================= -->
+
+<script
+    src="{% static 'js/academic-management/courses.js' %}"
+></script>
+
+{% endblock content %}

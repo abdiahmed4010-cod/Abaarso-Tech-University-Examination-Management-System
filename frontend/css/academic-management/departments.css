@@ -1,0 +1,869 @@
+/* =========================================================
+   DEPARTMENTS PAGE
+========================================================= */
+
+.department-page {
+    width: 100%;
+}
+
+
+/* =========================================================
+   TOOLBAR
+========================================================= */
+
+.department-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding: 16px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+}
+
+.department-search {
+    position: relative;
+    flex: 1;
+}
+
+.department-search i {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+    font-size: 14px;
+}
+
+.department-search input {
+    width: 100%;
+    height: 42px;
+    padding: 0 14px 0 40px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #111827;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.department-search input:focus {
+    border-color: #8B1538;
+    box-shadow: 0 0 0 3px rgba(139, 21, 56, 0.10);
+}
+
+.department-filter {
+    width: 240px;
+}
+
+.department-filter select {
+    width: 100%;
+    height: 42px;
+    padding: 0 36px 0 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #374151;
+    font-size: 14px;
+    outline: none;
+    cursor: pointer;
+}
+
+.department-filter select:focus {
+    border-color: #8B1538;
+    box-shadow: 0 0 0 3px rgba(139, 21, 56, 0.10);
+}
+
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.department-table-card {
+    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+}
+
+.department-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.department-table {
+    width: 100%;
+    min-width: 850px;
+    border-collapse: collapse;
+}
+
+.department-table thead {
+    background: #f9fafb;
+}
+
+.department-table th {
+    padding: 14px 16px;
+    border-bottom: 1px solid #e5e7eb;
+    color: #4b5563;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: left;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+}
+
+.department-table td {
+    padding: 15px 16px;
+    border-bottom: 1px solid #f0f1f3;
+    color: #374151;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+.department-table tbody tr {
+    transition: background-color 0.15s ease;
+}
+
+.department-table tbody tr:hover {
+    background: #fafafa;
+}
+
+.department-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+/* =========================================================
+   DEPARTMENT ID
+========================================================= */
+
+.department-id {
+    color: #8B1538;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   DEPARTMENT NAME
+========================================================= */
+
+.department-name {
+    color: #111827;
+    font-weight: 600;
+}
+
+.department-description {
+    margin-top: 3px;
+    color: #9ca3af;
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   CODE
+========================================================= */
+
+.department-code {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 8px;
+    border-radius: 6px;
+    background: #f5e6ea;
+    color: #8B1538;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   FACULTY
+========================================================= */
+
+.department-faculty {
+    color: #374151;
+    font-weight: 500;
+}
+
+.department-faculty-code {
+    margin-left: 5px;
+    color: #9ca3af;
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.department-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 9px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.department-status::before {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    content: "";
+}
+
+.department-status.active {
+    background: #ecfdf3;
+    color: #047857;
+}
+
+.department-status.active::before {
+    background: #10b981;
+}
+
+.department-status.inactive {
+    background: #f3f4f6;
+    color: #6b7280;
+}
+
+.department-status.inactive::before {
+    background: #9ca3af;
+}
+
+
+/* =========================================================
+   ACTIONS
+   Same style as Faculties
+========================================================= */
+
+.department-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    white-space: nowrap;
+}
+
+.department-action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 44px;
+    padding: 0 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #374151;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+
+/* Edit Button */
+
+.department-action-btn.edit {
+    min-width: 56px;
+    border-color: #d1d5db;
+    background: #ffffff;
+    color: #374151;
+}
+
+.department-action-btn.edit:hover {
+    border-color: #c9aab5;
+    background: #fdf7f9;
+    color: #8B1538;
+}
+
+
+/* Delete Button */
+
+.department-action-btn.delete {
+    min-width: 92px;
+    border-color: #dc2626;
+    background: #dc2626;
+    color: #ffffff;
+}
+
+.department-action-btn.delete:hover {
+    border-color: #b91c1c;
+    background: #b91c1c;
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.department-empty-state {
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.department-empty-state.hidden {
+    display: none;
+}
+
+.department-empty-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 58px;
+    height: 58px;
+    margin: 0 auto 16px;
+    border-radius: 50%;
+    background: #f5e6ea;
+    color: #8B1538;
+    font-size: 22px;
+}
+
+.department-empty-state h3 {
+    margin: 0;
+    color: #111827;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.department-empty-state p {
+    margin: 7px 0 0;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.department-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.department-modal[hidden] {
+    display: none !important;
+}
+
+.department-modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(17, 24, 39, 0.55);
+    backdrop-filter: blur(2px);
+}
+
+.department-modal-dialog {
+    position: relative;
+    z-index: 1;
+    width: min(100%, 560px);
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.20);
+}
+
+.department-modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 22px 24px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.department-modal-header h2 {
+    margin: 0;
+    color: #111827;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.department-modal-header p {
+    margin: 5px 0 0;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.department-modal-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 7px;
+    background: transparent;
+    color: #6b7280;
+    cursor: pointer;
+}
+
+.department-modal-close:hover {
+    background: #f3f4f6;
+    color: #111827;
+}
+
+
+/* =========================================================
+   FORM
+========================================================= */
+
+#departmentForm {
+    padding: 24px;
+}
+
+.department-form-group {
+    margin-bottom: 18px;
+}
+
+.department-form-group label {
+    display: block;
+    margin-bottom: 7px;
+    color: #374151;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.department-form-group label span {
+    color: #dc2626;
+}
+
+.department-form-group input,
+.department-form-group select,
+.department-form-group textarea {
+    width: 100%;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #111827;
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.department-form-group input,
+.department-form-group select {
+    height: 42px;
+    padding: 0 12px;
+}
+
+.department-form-group textarea {
+    min-height: 95px;
+    padding: 11px 12px;
+    resize: vertical;
+}
+
+.department-form-group input:focus,
+.department-form-group select:focus,
+.department-form-group textarea:focus {
+    border-color: #8B1538;
+    box-shadow: 0 0 0 3px rgba(139, 21, 56, 0.10);
+}
+
+
+/* =========================================================
+   ACTIVE SWITCH
+========================================================= */
+
+.department-status-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    margin-bottom: 22px;
+    border: 1px solid #e5e7eb;
+    border-radius: 9px;
+    background: #fafafa;
+}
+
+.department-status-title {
+    color: #374151;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.department-status-description {
+    margin-top: 2px;
+    color: #9ca3af;
+    font-size: 12px;
+}
+
+.department-switch {
+    position: relative;
+    display: inline-block;
+    width: 42px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.department-switch input {
+    width: 0;
+    height: 0;
+    opacity: 0;
+}
+
+.department-switch-slider {
+    position: absolute;
+    inset: 0;
+    border-radius: 999px;
+    background: #d1d5db;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.department-switch-slider::before {
+    position: absolute;
+    bottom: 3px;
+    left: 3px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #ffffff;
+    content: "";
+    transition: 0.2s;
+}
+
+.department-switch input:checked + .department-switch-slider {
+    background: #8B1538;
+}
+
+.department-switch input:checked + .department-switch-slider::before {
+    transform: translateX(18px);
+}
+
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.department-form-actions,
+.department-delete-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.department-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 40px;
+    padding: 0 16px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.department-btn-primary {
+    background: #8B1538;
+    color: #ffffff;
+}
+
+.department-btn-primary:hover {
+    background: #720f2e;
+}
+
+.department-btn-secondary {
+    border-color: #d1d5db;
+    background: #ffffff;
+    color: #374151;
+}
+
+.department-btn-secondary:hover {
+    background: #f9fafb;
+}
+
+.department-btn-danger {
+    background: #dc2626;
+    color: #ffffff;
+}
+
+.department-btn-danger:hover {
+    background: #b91c1c;
+}
+
+
+/* =========================================================
+   DELETE MODAL
+========================================================= */
+
+.department-delete-dialog {
+    position: relative;
+    z-index: 1;
+    width: min(100%, 420px);
+    padding: 28px;
+    border-radius: 12px;
+    background: #ffffff;
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.20);
+}
+
+.department-delete-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 54px;
+    height: 54px;
+    margin: 0 auto 16px;
+    border-radius: 50%;
+    background: #fef2f2;
+    color: #dc2626;
+    font-size: 20px;
+}
+
+.department-delete-dialog h2 {
+    margin: 0;
+    color: #111827;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.department-delete-dialog p {
+    margin: 10px 0 24px;
+    color: #6b7280;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.department-delete-dialog strong {
+    color: #374151;
+}
+
+
+/* =========================================================
+   DARK MODE
+========================================================= */
+
+[data-theme="dark"] .department-toolbar {
+    background: #1f2937;
+    border-color: #374151;
+}
+
+[data-theme="dark"] .department-search input,
+[data-theme="dark"] .department-filter select {
+    border-color: #4b5563;
+    background: #111827;
+    color: #f9fafb;
+}
+
+[data-theme="dark"] .department-search input::placeholder {
+    color: #6b7280;
+}
+
+[data-theme="dark"] .department-table-card {
+    background: #1f2937;
+    border-color: #374151;
+}
+
+[data-theme="dark"] .department-table thead {
+    background: #111827;
+}
+
+[data-theme="dark"] .department-table th {
+    border-color: #374151;
+    color: #9ca3af;
+}
+
+[data-theme="dark"] .department-table td {
+    border-color: #374151;
+    color: #d1d5db;
+}
+
+[data-theme="dark"] .department-table tbody tr:hover {
+    background: #263244;
+}
+
+[data-theme="dark"] .department-name {
+    color: #f9fafb;
+}
+
+[data-theme="dark"] .department-faculty {
+    color: #d1d5db;
+}
+
+[data-theme="dark"] .department-code {
+    background: rgba(139, 21, 56, 0.20);
+    color: #f3a4b9;
+}
+
+
+/* =========================================================
+   DARK MODE ACTIONS
+========================================================= */
+
+[data-theme="dark"] .department-action-btn {
+    border-color: #4b5563;
+    background: #1f2937;
+    color: #d1d5db;
+}
+
+[data-theme="dark"] .department-action-btn.edit {
+    border-color: #4b5563;
+    background: #1f2937;
+    color: #d1d5db;
+}
+
+[data-theme="dark"] .department-action-btn.edit:hover {
+    border-color: #8B1538;
+    background: rgba(139, 21, 56, 0.15);
+    color: #f3a4b9;
+}
+
+[data-theme="dark"] .department-action-btn.delete {
+    border-color: #dc2626;
+    background: #dc2626;
+    color: #ffffff;
+}
+
+[data-theme="dark"] .department-action-btn.delete:hover {
+    border-color: #b91c1c;
+    background: #b91c1c;
+    color: #ffffff;
+}
+
+
+[data-theme="dark"] .department-modal-dialog,
+[data-theme="dark"] .department-delete-dialog {
+    background: #1f2937;
+}
+
+[data-theme="dark"] .department-modal-header {
+    border-color: #374151;
+}
+
+[data-theme="dark"] .department-modal-header h2,
+[data-theme="dark"] .department-delete-dialog h2 {
+    color: #f9fafb;
+}
+
+[data-theme="dark"] .department-modal-header p,
+[data-theme="dark"] .department-delete-dialog p {
+    color: #9ca3af;
+}
+
+[data-theme="dark"] .department-form-group label {
+    color: #d1d5db;
+}
+
+[data-theme="dark"] .department-form-group input,
+[data-theme="dark"] .department-form-group select,
+[data-theme="dark"] .department-form-group textarea {
+    border-color: #4b5563;
+    background: #111827;
+    color: #f9fafb;
+}
+
+[data-theme="dark"] .department-status-row {
+    border-color: #374151;
+    background: #111827;
+}
+
+[data-theme="dark"] .department-status-title {
+    color: #d1d5db;
+}
+
+[data-theme="dark"] .department-btn-secondary {
+    border-color: #4b5563;
+    background: #1f2937;
+    color: #d1d5db;
+}
+
+[data-theme="dark"] .department-btn-secondary:hover {
+    background: #263244;
+}
+
+[data-theme="dark"] .department-empty-state h3 {
+    color: #f9fafb;
+}
+
+[data-theme="dark"] .department-empty-state p {
+    color: #9ca3af;
+}
+
+[data-theme="dark"] .department-empty-icon {
+    background: rgba(139, 21, 56, 0.20);
+    color: #f3a4b9;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 768px) {
+
+    .department-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .department-filter {
+        width: 100%;
+    }
+
+    .department-modal {
+        padding: 12px;
+    }
+
+    .department-modal-dialog {
+        max-height: calc(100vh - 24px);
+    }
+
+    .department-modal-header,
+    #departmentForm {
+        padding: 18px;
+    }
+
+    .department-delete-dialog {
+        padding: 22px;
+    }
+}
+
+
+@media (max-width: 480px) {
+
+    .department-form-actions,
+    .department-delete-actions {
+        flex-direction: column-reverse;
+    }
+
+    .department-btn {
+        width: 100%;
+    }
+
+    .department-actions {
+        gap: 7px;
+    }
+
+    .department-action-btn {
+        height: 42px;
+        padding: 0 13px;
+        font-size: 13px;
+    }
+
+    .department-action-btn.edit {
+        min-width: 52px;
+    }
+
+    .department-action-btn.delete {
+        min-width: 78px;
+    }
+}

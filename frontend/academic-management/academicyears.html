@@ -1,0 +1,1019 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<!-- =====================================================
+     ACADEMIC YEARS PAGE
+====================================================== -->
+
+<style>
+    /* =====================================================
+       LIGHT MODE
+    ====================================================== */
+
+    .academic-years-page {
+        color: #1f2937;
+    }
+
+    .academic-years-search-card,
+    .academic-years-table-card {
+        background-color: #ffffff;
+        border: 1px solid #e5e7eb;
+    }
+
+    .academic-years-search-input {
+        background-color: #ffffff;
+        color: #1f2937;
+        border: 1px solid #e5e7eb;
+    }
+
+    .academic-years-search-input::placeholder {
+        color: #9ca3af;
+    }
+
+    .academic-years-table-head {
+        background-color: #f9fafb;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .academic-years-table-head th {
+        color: #4b5563;
+    }
+
+    .academic-years-table-body tr {
+        border-bottom: 1px solid #f3f4f6;
+        background-color: #ffffff;
+    }
+
+    .academic-years-table-body tr:last-child {
+        border-bottom: none;
+    }
+
+    .academic-years-table-body tr:hover {
+        background-color: #fafafa;
+    }
+
+    .academic-years-table-body td {
+        color: #374151;
+    }
+
+    .academic-years-modal {
+        background-color: #ffffff;
+        color: #1f2937;
+    }
+
+    .academic-years-modal-header,
+    .academic-years-modal-footer {
+        border-color: #e5e7eb;
+    }
+
+    .academic-years-modal-footer {
+        background-color: #f9fafb;
+    }
+
+    .academic-years-label {
+        color: #374151;
+    }
+
+    .academic-years-input {
+        background-color: #ffffff;
+        color: #1f2937;
+        border: 1px solid #e5e7eb;
+    }
+
+    .academic-years-input::placeholder {
+        color: #9ca3af;
+    }
+
+    .academic-years-cancel {
+        color: #374151;
+        border-color: #e5e7eb;
+        background-color: #ffffff;
+    }
+
+    .academic-years-cancel:hover {
+        background-color: #f3f4f6;
+    }
+
+    .academic-years-delete-modal {
+        background-color: #ffffff;
+        color: #1f2937;
+    }
+
+
+    /* =====================================================
+       DARK MODE
+       IMPORTANT:
+       Project uses [data-theme="dark"]
+       NOT .dark
+    ====================================================== */
+
+    [data-theme="dark"] .academic-years-page {
+        color: #f3f4f6;
+    }
+
+    [data-theme="dark"] .academic-years-page h2 {
+        color: #f3f4f6 !important;
+    }
+
+    [data-theme="dark"] .academic-years-page p {
+        color: #9ca3af !important;
+    }
+
+
+    /* SEARCH CARD */
+
+    [data-theme="dark"] .academic-years-search-card {
+        background-color: #181b25 !important;
+        border-color: #2f3441 !important;
+    }
+
+
+    /* SEARCH INPUT */
+
+    [data-theme="dark"] .academic-years-search-input {
+        background-color: #1f2330 !important;
+        color: #f3f4f6 !important;
+        border-color: #374151 !important;
+    }
+
+    [data-theme="dark"] .academic-years-search-input::placeholder {
+        color: #6b7280 !important;
+    }
+
+    [data-theme="dark"] .academic-years-search-input:focus {
+        border-color: #a82346 !important;
+        outline: none;
+        box-shadow: 0 0 0 1px #a82346;
+    }
+
+
+    /* TABLE CARD */
+
+    [data-theme="dark"] .academic-years-table-card {
+        background-color: #181b25 !important;
+        border-color: #2f3441 !important;
+    }
+
+
+    /* TABLE HEADER */
+
+    [data-theme="dark"] .academic-years-table-head {
+        background-color: #151821 !important;
+        border-color: #2f3441 !important;
+    }
+
+    [data-theme="dark"] .academic-years-table-head th {
+        color: #9ca3af !important;
+    }
+
+
+    /* TABLE BODY */
+
+    [data-theme="dark"] .academic-years-table-body tr {
+        background-color: #181b25 !important;
+        border-color: #2f3441 !important;
+    }
+
+    [data-theme="dark"] .academic-years-table-body tr:hover {
+        background-color: #1f2330 !important;
+    }
+
+    [data-theme="dark"] .academic-years-table-body td {
+        color: #e5e7eb !important;
+    }
+
+
+    /* TABLE ID */
+
+    [data-theme="dark"] .academic-year-id {
+        color: #d1d5db !important;
+    }
+
+
+    /* TABLE YEAR NAME */
+
+    [data-theme="dark"] .academic-year-name {
+        color: #f3f4f6 !important;
+    }
+
+
+    /* STATUS - CURRENT */
+
+    [data-theme="dark"] .academic-year-current {
+        background-color: rgba(34, 197, 94, 0.15) !important;
+        color: #86efac !important;
+    }
+
+
+    /* STATUS - INACTIVE */
+
+    [data-theme="dark"] .academic-year-inactive {
+        background-color: #272b35 !important;
+        color: #9ca3af !important;
+    }
+
+
+    /* EDIT BUTTON */
+
+    [data-theme="dark"] .edit-year-btn {
+        color: #d1d5db !important;
+    }
+
+    [data-theme="dark"] .edit-year-btn:hover {
+        color: #ffffff !important;
+        background-color: #2f3441 !important;
+    }
+
+
+    /* DELETE BUTTON */
+
+    [data-theme="dark"] .delete-year-btn {
+        color: #fca5a5 !important;
+    }
+
+    [data-theme="dark"] .delete-year-btn:hover {
+        color: #fecaca !important;
+        background-color: rgba(127, 29, 29, 0.25) !important;
+    }
+
+
+    /* EMPTY STATE */
+
+    [data-theme="dark"] .academic-years-empty {
+        color: #9ca3af !important;
+    }
+
+    [data-theme="dark"] .academic-years-empty-icon {
+        background-color: #3a202b !important;
+    }
+
+
+    /* =====================================================
+       ADD / EDIT MODAL
+    ====================================================== */
+
+    [data-theme="dark"] .academic-years-modal {
+        background-color: #181b25 !important;
+        color: #f3f4f6 !important;
+        border-color: #2f3441 !important;
+    }
+
+    [data-theme="dark"] .academic-years-modal-header,
+    [data-theme="dark"] .academic-years-modal-footer {
+        border-color: #2f3441 !important;
+    }
+
+    [data-theme="dark"] .academic-years-modal-footer {
+        background-color: #151821 !important;
+    }
+
+    [data-theme="dark"] .academic-years-modal-title {
+        color: #f3f4f6 !important;
+    }
+
+    [data-theme="dark"] .academic-years-modal-description {
+        color: #9ca3af !important;
+    }
+
+    [data-theme="dark"] .academic-years-label {
+        color: #e5e7eb !important;
+    }
+
+    [data-theme="dark"] .academic-years-input {
+        background-color: #1f2330 !important;
+        color: #f3f4f6 !important;
+        border-color: #374151 !important;
+    }
+
+    [data-theme="dark"] .academic-years-input::placeholder {
+        color: #6b7280 !important;
+    }
+
+    [data-theme="dark"] .academic-years-input:focus {
+        border-color: #a82346 !important;
+        outline: none;
+        box-shadow: 0 0 0 1px #a82346;
+    }
+
+    [data-theme="dark"] .academic-years-cancel {
+        background-color: #181b25 !important;
+        color: #d1d5db !important;
+        border-color: #374151 !important;
+    }
+
+    [data-theme="dark"] .academic-years-cancel:hover {
+        background-color: #2f3441 !important;
+        color: #ffffff !important;
+    }
+
+
+    /* =====================================================
+       DELETE MODAL
+    ====================================================== */
+
+    [data-theme="dark"] .academic-years-delete-modal {
+        background-color: #181b25 !important;
+        color: #f3f4f6 !important;
+        border-color: #2f3441 !important;
+    }
+
+    [data-theme="dark"] .academic-years-delete-title {
+        color: #f3f4f6 !important;
+    }
+
+    [data-theme="dark"] .academic-years-delete-description {
+        color: #9ca3af !important;
+    }
+
+    [data-theme="dark"] .academic-years-delete-text {
+        color: #d1d5db !important;
+    }
+
+    [data-theme="dark"] .academic-years-delete-name {
+        color: #f3f4f6 !important;
+    }
+
+    [data-theme="dark"] .academic-years-delete-footer {
+        background-color: #151821 !important;
+        border-color: #2f3441 !important;
+    }
+
+
+    /* =====================================================
+       DATE INPUT ICON
+    ====================================================== */
+
+    [data-theme="dark"] .academic-years-input::-webkit-calendar-picker-indicator {
+        filter: invert(1);
+        opacity: 0.8;
+    }
+</style>
+
+
+<div class="academic-years-page space-y-6">
+
+    <!-- =====================================================
+         PAGE HEADER
+    ====================================================== -->
+
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+
+        <div>
+
+            <h2 class="text-xl font-semibold text-gray-800">
+                Academic Years
+            </h2>
+
+            <p class="text-sm text-gray-500 mt-1">
+                Manage academic years used throughout the examination system.
+            </p>
+
+        </div>
+
+
+        <button
+            type="button"
+            id="addAcademicYearBtn"
+            class="inline-flex items-center justify-center gap-2
+                   px-4 py-2.5 rounded-lg
+                   bg-atu-primary text-white
+                   text-sm font-medium
+                   hover:bg-atu-dark transition"
+        >
+
+            <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M12 5v14M5 12h14"
+                />
+            </svg>
+
+            Add Academic Year
+
+        </button>
+
+    </div>
+
+
+    <!-- =====================================================
+         SEARCH
+    ====================================================== -->
+
+    <div
+        class="academic-years-search-card
+               rounded-xl p-4"
+    >
+
+        <div class="relative max-w-sm">
+
+            <svg
+                class="absolute left-3 top-1/2
+                       -translate-y-1/2
+                       w-4 h-4
+                       text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M21 21l-4.35-4.35m1.35-5.65a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+            </svg>
+
+
+            <input
+                type="search"
+                id="academicYearSearch"
+                placeholder="Search academic years..."
+                class="academic-years-search-input
+                       w-full pl-9 pr-4 py-2.5
+                       text-sm rounded-lg outline-none"
+            >
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         TABLE
+    ====================================================== -->
+
+    <div
+        class="academic-years-table-card
+               rounded-xl overflow-hidden"
+    >
+
+        <div class="overflow-x-auto">
+
+            <table class="w-full">
+
+                <!-- TABLE HEADER -->
+
+                <thead
+                    class="academic-years-table-head"
+                >
+
+                    <tr>
+
+                        <th
+                            class="px-5 py-3.5
+                                   text-left
+                                   text-xs font-semibold"
+                        >
+                            Academic ID
+                        </th>
+
+
+                        <th
+                            class="px-5 py-3.5
+                                   text-left
+                                   text-xs font-semibold"
+                        >
+                            Academic Year
+                        </th>
+
+
+                        <th
+                            class="px-5 py-3.5
+                                   text-left
+                                   text-xs font-semibold"
+                        >
+                            Start Date
+                        </th>
+
+
+                        <th
+                            class="px-5 py-3.5
+                                   text-left
+                                   text-xs font-semibold"
+                        >
+                            End Date
+                        </th>
+
+
+                        <th
+                            class="px-5 py-3.5
+                                   text-left
+                                   text-xs font-semibold"
+                        >
+                            Status
+                        </th>
+
+
+                        <th
+                            class="px-5 py-3.5
+                                   text-right
+                                   text-xs font-semibold"
+                        >
+                            Actions
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <!-- TABLE BODY -->
+
+                <tbody
+                    id="academicYearsTableBody"
+                    class="academic-years-table-body"
+                >
+                    <!-- JavaScript inserts rows here -->
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- =================================================
+             EMPTY STATE
+        ================================================== -->
+
+        <div
+            id="academicYearsEmptyState"
+            class="academic-years-empty
+                   hidden
+                   px-6 py-12 text-center"
+        >
+
+            <div
+                class="academic-years-empty-icon
+                       w-12 h-12 mx-auto mb-3
+                       rounded-full
+                       bg-atu-light
+                       flex items-center justify-center"
+            >
+
+                <svg
+                    class="w-6 h-6 text-atu-primary"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M8 7V3m8 4V3m-9 4h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    />
+                </svg>
+
+            </div>
+
+
+            <h3
+                class="text-sm font-semibold
+                       text-gray-700"
+            >
+                No academic years found
+            </h3>
+
+
+            <p
+                class="text-sm text-gray-500 mt-1"
+            >
+                Add an academic year to get started.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     ADD / EDIT ACADEMIC YEAR MODAL
+====================================================== -->
+
+<div
+    id="academicYearModal"
+    class="fixed inset-0 z-[100] hidden
+           flex items-center justify-center
+           bg-black/40 p-4"
+>
+
+    <div
+        class="academic-years-modal
+               w-full max-w-lg
+               rounded-xl shadow-xl
+               border"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="academicYearModalTitle"
+    >
+
+        <!-- MODAL HEADER -->
+
+        <div
+            class="academic-years-modal-header
+                   flex items-center justify-between
+                   px-6 py-4
+                   border-b"
+        >
+
+            <div>
+
+                <h3
+                    id="academicYearModalTitle"
+                    class="academic-years-modal-title
+                           text-base font-semibold"
+                >
+                    Add Academic Year
+                </h3>
+
+
+                <p
+                    class="academic-years-modal-description
+                           text-xs mt-1"
+                >
+                    Enter the academic year details.
+                </p>
+
+            </div>
+
+
+            <button
+                type="button"
+                id="closeAcademicYearModal"
+                data-close-academic-year
+                class="w-8 h-8 rounded-lg
+                       flex items-center justify-center
+                       text-gray-400
+                       hover:bg-gray-100
+                       hover:text-gray-700"
+                aria-label="Close"
+            >
+
+                <svg
+                    class="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M6 18L18 6M6 6l12 12"
+                    />
+                </svg>
+
+            </button>
+
+        </div>
+
+
+        <!-- FORM -->
+
+        <form id="academicYearForm">
+
+            <input
+                type="hidden"
+                id="academicYearId"
+                value=""
+            >
+
+            <input
+                type="hidden"
+                id="academicYearMethod"
+                value="POST"
+            >
+
+
+            <div class="p-6 space-y-5">
+
+                <!-- ACADEMIC YEAR -->
+
+                <div>
+
+                    <label
+                        for="academicYearName"
+                        class="academic-years-label
+                               block text-sm font-medium
+                               mb-1.5"
+                    >
+                        Academic Year
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="academicYearName"
+                        name="name"
+                        placeholder="e.g. 2026/2027"
+                        maxlength="20"
+                        required
+                        class="academic-years-input
+                               w-full px-3.5 py-2.5
+                               text-sm rounded-lg
+                               outline-none"
+                    >
+
+                </div>
+
+
+                <!-- DATES -->
+
+                <div
+                    class="grid grid-cols-1
+                           sm:grid-cols-2 gap-4"
+                >
+
+                    <!-- START DATE -->
+
+                    <div>
+
+                        <label
+                            for="startDate"
+                            class="academic-years-label
+                                   block text-sm font-medium
+                                   mb-1.5"
+                        >
+                            Start Date
+                        </label>
+
+
+                        <input
+                            type="date"
+                            id="startDate"
+                            name="start_date"
+                            required
+                            class="academic-years-input
+                                   w-full px-3.5 py-2.5
+                                   text-sm rounded-lg
+                                   outline-none"
+                        >
+
+                    </div>
+
+
+                    <!-- END DATE -->
+
+                    <div>
+
+                        <label
+                            for="endDate"
+                            class="academic-years-label
+                                   block text-sm font-medium
+                                   mb-1.5"
+                        >
+                            End Date
+                        </label>
+
+
+                        <input
+                            type="date"
+                            id="endDate"
+                            name="end_date"
+                            required
+                            class="academic-years-input
+                                   w-full px-3.5 py-2.5
+                                   text-sm rounded-lg
+                                   outline-none"
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- CURRENT -->
+
+                <label
+                    class="flex items-center gap-2.5 cursor-pointer"
+                >
+
+                    <input
+                        type="checkbox"
+                        id="isCurrent"
+                        name="is_current"
+                        class="w-4 h-4 accent-[#8B1538]"
+                    >
+
+
+                    <span
+                        class="academic-years-label
+                               text-sm"
+                    >
+                        Set as current academic year
+                    </span>
+
+                </label>
+
+            </div>
+
+
+            <!-- MODAL FOOTER -->
+
+            <div
+                class="academic-years-modal-footer
+                       flex items-center justify-end
+                       gap-3 px-6 py-4
+                       border-t
+                       rounded-b-xl"
+            >
+
+                <button
+                    type="button"
+                    id="cancelAcademicYear"
+                    data-close-academic-year
+                    class="academic-years-cancel
+                           px-4 py-2
+                           text-sm font-medium
+                           border rounded-lg"
+                >
+                    Cancel
+                </button>
+
+
+                <button
+                    type="submit"
+                    class="px-4 py-2
+                           text-sm font-medium
+                           text-white
+                           bg-atu-primary
+                           rounded-lg
+                           hover:bg-atu-dark"
+                >
+                    Save Academic Year
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     DELETE CONFIRMATION MODAL
+====================================================== -->
+
+<div
+    id="deleteAcademicYearModal"
+    class="fixed inset-0 z-[110] hidden
+           flex items-center justify-center
+           bg-black/40 p-4"
+>
+
+    <div
+        class="academic-years-delete-modal
+               w-full max-w-md
+               rounded-xl shadow-xl
+               border"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="deleteAcademicYearTitle"
+    >
+
+        <!-- DELETE HEADER -->
+
+        <div
+            class="px-6 py-5
+                   border-b
+                   border-gray-200"
+        >
+
+            <div class="flex items-center gap-3">
+
+                <div
+                    class="w-10 h-10 rounded-full
+                           bg-red-100
+                           flex items-center justify-center"
+                >
+
+                    <svg
+                        class="w-5 h-5 text-red-600"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M12 9v4m0 4h.01M10.29 3.86l-8.18 14A2 2 0 003.82 21h16.36a2 2 0 001.71-3.14l-8.18-14a2 2 0 00-3.42 0z"
+                        />
+                    </svg>
+
+                </div>
+
+
+                <div>
+
+                    <h3
+                        id="deleteAcademicYearTitle"
+                        class="academic-years-delete-title
+                               text-base font-semibold"
+                    >
+                        Delete Academic Year?
+                    </h3>
+
+
+                    <p
+                        class="academic-years-delete-description
+                               text-xs mt-1"
+                    >
+                        This action cannot be undone.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- DELETE BODY -->
+
+        <div class="px-6 py-5">
+
+            <p
+                class="academic-years-delete-text
+                       text-sm"
+            >
+                Are you sure you want to delete
+
+                <span
+                    id="deleteAcademicYearName"
+                    class="academic-years-delete-name
+                           font-semibold"
+                ></span>?
+
+            </p>
+
+        </div>
+
+
+        <!-- DELETE FOOTER -->
+
+        <div
+            class="academic-years-delete-footer
+                   flex items-center justify-end
+                   gap-3 px-6 py-4
+                   border-t
+                   border-gray-200
+                   bg-gray-50
+                   rounded-b-xl"
+        >
+
+            <button
+                type="button"
+                id="cancelDeleteAcademicYear"
+                class="academic-years-cancel
+                       px-4 py-2
+                       text-sm font-medium
+                       border rounded-lg"
+            >
+                Cancel
+            </button>
+
+
+            <button
+                type="button"
+                id="confirmDeleteAcademicYear"
+                class="px-4 py-2
+                       text-sm font-medium
+                       text-white
+                       bg-red-600
+                       rounded-lg
+                       hover:bg-red-700"
+            >
+                Delete Academic Year
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     JAVASCRIPT
+====================================================== -->
+
+<script src="{% static 'js/academic-management/academicyears.js' %}"></script>
+
+{% endblock %}

@@ -1,0 +1,695 @@
+/* =========================================================
+   SEMESTERS PAGE
+   ATU Examination Management System
+========================================================= */
+
+.semester-page {
+    width: 100%;
+}
+
+
+/* =========================================================
+   TOOLBAR
+========================================================= */
+
+.semester-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.semester-search {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+}
+
+.semester-search i {
+    position: absolute;
+    top: 50%;
+    left: 15px;
+    transform: translateY(-50%);
+    color: #9ca3af;
+    font-size: 14px;
+    pointer-events: none;
+}
+
+.semester-search input {
+    width: 100%;
+    height: 44px;
+    padding: 0 16px 0 42px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    outline: none;
+    background: #ffffff;
+    color: #111827;
+    font-family: inherit;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.semester-search input::placeholder {
+    color: #9ca3af;
+}
+
+.semester-search input:focus {
+    border-color: #8B1538;
+    box-shadow: 0 0 0 3px rgba(139, 21, 56, 0.08);
+}
+
+
+/* =========================================================
+   TABLE CARD
+========================================================= */
+
+.semester-table-card {
+    width: 100%;
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    background: #ffffff;
+}
+
+.semester-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.semester-table {
+    width: 100%;
+    min-width: 650px;
+    border-collapse: collapse;
+}
+
+.semester-table thead {
+    background: #f9fafb;
+}
+
+.semester-table th {
+    padding: 14px 20px;
+    border-bottom: 1px solid #e5e7eb;
+    color: #6b7280;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: left;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+}
+
+.semester-table th.text-right {
+    text-align: right;
+}
+
+.semester-table td {
+    padding: 16px 20px;
+    border-bottom: 1px solid #f1f5f9;
+    color: #374151;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+.semester-table tbody tr {
+    transition: background-color 0.15s ease;
+}
+
+.semester-table tbody tr:hover {
+    background: #fdf7f9;
+}
+
+.semester-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+/* =========================================================
+   SEMESTER ID
+========================================================= */
+
+.semester-id {
+    color: #8B1538;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   SEMESTER NAME
+========================================================= */
+
+.semester-name {
+    color: #111827;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   ACTIONS
+   Same design as Departments / Faculties
+========================================================= */
+
+.semester-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    white-space: nowrap;
+}
+
+.semester-action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 44px;
+    padding: 0 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #374151;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.semester-action-btn.edit {
+    min-width: 56px;
+    border-color: #d1d5db;
+    background: #ffffff;
+    color: #374151;
+}
+
+.semester-action-btn.edit:hover {
+    border-color: #c9aab5;
+    background: #fdf7f9;
+    color: #8B1538;
+}
+
+.semester-action-btn.delete {
+    min-width: 92px;
+    border-color: #dc2626;
+    background: #dc2626;
+    color: #ffffff;
+}
+
+.semester-action-btn.delete:hover {
+    border-color: #b91c1c;
+    background: #b91c1c;
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.semester-empty-state {
+    padding: 56px 24px;
+    text-align: center;
+}
+
+.semester-empty-state.hidden {
+    display: none;
+}
+
+.semester-empty-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 16px;
+    border-radius: 12px;
+    background: #f5e6ea;
+    color: #8B1538;
+    font-size: 22px;
+}
+
+.semester-empty-state h3 {
+    margin: 0 0 6px;
+    color: #111827;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.semester-empty-state p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.semester-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.semester-modal[hidden] {
+    display: none !important;
+}
+
+.semester-modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(17, 24, 39, 0.55);
+    backdrop-filter: blur(2px);
+}
+
+.semester-modal-dialog {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 520px;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18);
+}
+
+.semester-modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 22px 24px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.semester-modal-header h2 {
+    margin: 0;
+    color: #111827;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.semester-modal-header p {
+    margin: 5px 0 0;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.semester-modal-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: #6b7280;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.semester-modal-close:hover {
+    background: #f3f4f6;
+    color: #111827;
+}
+
+
+/* =========================================================
+   FORM
+========================================================= */
+
+#semesterForm {
+    padding: 24px;
+}
+
+.semester-form-group {
+    margin-bottom: 24px;
+}
+
+.semester-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #374151;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.semester-form-group label span {
+    color: #dc2626;
+}
+
+.semester-form-group input {
+    width: 100%;
+    height: 44px;
+    padding: 0 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    outline: none;
+    background: #ffffff;
+    color: #111827;
+    font-family: inherit;
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+}
+
+.semester-form-group input::placeholder {
+    color: #9ca3af;
+}
+
+.semester-form-group input:focus {
+    border-color: #8B1538;
+    box-shadow: 0 0 0 3px rgba(139, 21, 56, 0.08);
+}
+
+
+/* =========================================================
+   FORM BUTTONS
+========================================================= */
+
+.semester-form-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.semester-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 42px;
+    padding: 0 16px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.semester-btn-secondary {
+    border: 1px solid #d1d5db;
+    background: #ffffff;
+    color: #374151;
+}
+
+.semester-btn-secondary:hover {
+    background: #f9fafb;
+    border-color: #9ca3af;
+}
+
+.semester-btn-primary {
+    border: 1px solid #8B1538;
+    background: #8B1538;
+    color: #ffffff;
+}
+
+.semester-btn-primary:hover {
+    border-color: #720e2e;
+    background: #720e2e;
+}
+
+.semester-btn-danger {
+    border: 1px solid #dc2626;
+    background: #dc2626;
+    color: #ffffff;
+}
+
+.semester-btn-danger:hover {
+    border-color: #b91c1c;
+    background: #b91c1c;
+}
+
+
+/* =========================================================
+   DELETE MODAL
+========================================================= */
+
+.semester-delete-dialog {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 440px;
+    padding: 28px;
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18);
+    text-align: center;
+}
+
+.semester-delete-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 18px;
+    border-radius: 50%;
+    background: #fee2e2;
+    color: #dc2626;
+    font-size: 20px;
+}
+
+.semester-delete-dialog h2 {
+    margin: 0 0 8px;
+    color: #111827;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.semester-delete-dialog p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.semester-delete-dialog strong {
+    color: #374151;
+}
+
+.semester-delete-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 24px;
+}
+
+
+/* =========================================================
+   DARK MODE
+========================================================= */
+
+[data-theme="dark"] .semester-table-card {
+    border-color: #374151;
+    background: #111827;
+}
+
+[data-theme="dark"] .semester-table thead {
+    background: #1f2937;
+}
+
+[data-theme="dark"] .semester-table th {
+    border-color: #374151;
+    color: #9ca3af;
+}
+
+[data-theme="dark"] .semester-table td {
+    border-color: #374151;
+    color: #d1d5db;
+}
+
+[data-theme="dark"] .semester-table tbody tr:hover {
+    background: rgba(139, 21, 56, 0.08);
+}
+
+[data-theme="dark"] .semester-name {
+    color: #f3f4f6;
+}
+
+[data-theme="dark"] .semester-id {
+    color: #f3a4b9;
+}
+
+[data-theme="dark"] .semester-search input {
+    border-color: #4b5563;
+    background: #1f2937;
+    color: #f3f4f6;
+}
+
+[data-theme="dark"] .semester-search input:focus {
+    border-color: #8B1538;
+}
+
+[data-theme="dark"] .semester-empty-state h3 {
+    color: #f3f4f6;
+}
+
+[data-theme="dark"] .semester-empty-state p {
+    color: #9ca3af;
+}
+
+[data-theme="dark"] .semester-empty-icon {
+    background: rgba(139, 21, 56, 0.15);
+    color: #f3a4b9;
+}
+
+[data-theme="dark"] .semester-action-btn {
+    border-color: #4b5563;
+    background: #1f2937;
+    color: #d1d5db;
+}
+
+[data-theme="dark"] .semester-action-btn.edit {
+    border-color: #4b5563;
+    background: #1f2937;
+    color: #d1d5db;
+}
+
+[data-theme="dark"] .semester-action-btn.edit:hover {
+    border-color: #8B1538;
+    background: rgba(139, 21, 56, 0.15);
+    color: #f3a4b9;
+}
+
+[data-theme="dark"] .semester-action-btn.delete {
+    border-color: #dc2626;
+    background: #dc2626;
+    color: #ffffff;
+}
+
+[data-theme="dark"] .semester-action-btn.delete:hover {
+    border-color: #b91c1c;
+    background: #b91c1c;
+}
+
+[data-theme="dark"] .semester-modal-dialog,
+[data-theme="dark"] .semester-delete-dialog {
+    background: #111827;
+}
+
+[data-theme="dark"] .semester-modal-header {
+    border-color: #374151;
+}
+
+[data-theme="dark"] .semester-modal-header h2,
+[data-theme="dark"] .semester-delete-dialog h2 {
+    color: #f3f4f6;
+}
+
+[data-theme="dark"] .semester-modal-header p,
+[data-theme="dark"] .semester-delete-dialog p {
+    color: #9ca3af;
+}
+
+[data-theme="dark"] .semester-modal-close {
+    color: #9ca3af;
+}
+
+[data-theme="dark"] .semester-modal-close:hover {
+    background: #1f2937;
+    color: #f3f4f6;
+}
+
+[data-theme="dark"] .semester-form-group label {
+    color: #d1d5db;
+}
+
+[data-theme="dark"] .semester-form-group input {
+    border-color: #4b5563;
+    background: #1f2937;
+    color: #f3f4f6;
+}
+
+[data-theme="dark"] .semester-btn-secondary {
+    border-color: #4b5563;
+    background: #1f2937;
+    color: #d1d5db;
+}
+
+[data-theme="dark"] .semester-btn-secondary:hover {
+    background: #374151;
+}
+
+[data-theme="dark"] .semester-delete-icon {
+    background: rgba(220, 38, 38, 0.15);
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 640px) {
+
+    .semester-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .semester-search {
+        max-width: none;
+    }
+
+    .semester-modal {
+        padding: 12px;
+    }
+
+    .semester-modal-dialog {
+        max-height: calc(100vh - 24px);
+    }
+
+    .semester-modal-header {
+        padding: 18px;
+    }
+
+    #semesterForm {
+        padding: 18px;
+    }
+
+    .semester-form-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .semester-form-actions .semester-btn {
+        width: 100%;
+    }
+
+    .semester-delete-dialog {
+        padding: 22px;
+    }
+
+    .semester-delete-actions {
+        flex-direction: column-reverse;
+    }
+
+    .semester-delete-actions .semester-btn {
+        width: 100%;
+    }
+
+    .semester-action-btn {
+        height: 40px;
+        padding: 0 13px;
+    }
+
+}

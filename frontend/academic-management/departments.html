@@ -1,0 +1,349 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="department-page">
+
+    <!-- Page Header -->
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6">
+
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+                Departments
+            </h1>
+
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                Manage university departments and their faculties.
+            </p>
+        </div>
+
+        <button
+            type="button"
+            id="addDepartmentBtn"
+            class="inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold text-white transition"
+            style="background-color: #8B1538;"
+        >
+            <i class="fa-solid fa-plus"></i>
+            Add Department
+        </button>
+
+    </div>
+
+
+    <!-- Search / Filter -->
+    <div class="department-toolbar">
+
+        <div class="department-search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            <input
+                type="text"
+                id="departmentSearch"
+                placeholder="Search departments..."
+                autocomplete="off"
+            >
+        </div>
+
+        <div class="department-filter">
+
+            <select id="departmentFacultyFilter">
+                <option value="">All Faculties</option>
+            </select>
+
+        </div>
+
+    </div>
+
+
+    <!-- Table Card -->
+    <div class="department-table-card">
+
+        <div class="department-table-wrapper">
+
+            <table class="department-table">
+
+                <thead>
+                    <tr>
+                        <th>Department ID</th>
+                        <th>Department Name</th>
+                        <th>Code</th>
+                        <th>Faculty</th>
+                        <th>Status</th>
+                        <th class="text-right">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody id="departmentsTableBody">
+                    <!-- Departments loaded by JavaScript -->
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- Empty State -->
+        <div
+            id="departmentsEmptyState"
+            class="department-empty-state hidden"
+        >
+            <div class="department-empty-icon">
+                <i class="fa-solid fa-building"></i>
+            </div>
+
+            <h3>
+                No Departments Found
+            </h3>
+
+            <p>
+                There are no departments matching your search.
+            </p>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     ADD / EDIT DEPARTMENT MODAL
+========================================================= -->
+
+<div
+    id="departmentModal"
+    class="department-modal"
+    hidden
+>
+
+    <div class="department-modal-overlay"></div>
+
+    <div class="department-modal-dialog">
+
+        <div class="department-modal-header">
+
+            <div>
+                <h2 id="departmentModalTitle">
+                    Add Department
+                </h2>
+
+                <p>
+                    Enter the department information below.
+                </p>
+            </div>
+
+            <button
+                type="button"
+                id="closeDepartmentModal"
+                class="department-modal-close"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+        </div>
+
+
+        <form id="departmentForm">
+
+            <input
+                type="hidden"
+                id="departmentId"
+            >
+
+
+            <!-- Faculty -->
+            <div class="department-form-group">
+
+                <label for="departmentFaculty">
+                    Faculty
+                    <span>*</span>
+                </label>
+
+                <select
+                    id="departmentFaculty"
+                    required
+                >
+                    <option value="">
+                        Select Faculty
+                    </option>
+                </select>
+
+            </div>
+
+
+            <!-- Department Name -->
+            <div class="department-form-group">
+
+                <label for="departmentName">
+                    Department Name
+                    <span>*</span>
+                </label>
+
+                <input
+                    type="text"
+                    id="departmentName"
+                    placeholder="e.g. Software Engineering"
+                    required
+                >
+
+            </div>
+
+
+            <!-- Department Code -->
+            <div class="department-form-group">
+
+                <label for="departmentCode">
+                    Department Code
+                    <span>*</span>
+                </label>
+
+                <input
+                    type="text"
+                    id="departmentCode"
+                    placeholder="e.g. SE"
+                    maxlength="20"
+                    required
+                >
+
+            </div>
+
+
+            <!-- Description -->
+            <div class="department-form-group">
+
+                <label for="departmentDescription">
+                    Description
+                </label>
+
+                <textarea
+                    id="departmentDescription"
+                    rows="4"
+                    placeholder="Enter department description..."
+                ></textarea>
+
+            </div>
+
+
+            <!-- Status -->
+            <div class="department-status-row">
+
+                <label class="department-switch">
+
+                    <input
+                        type="checkbox"
+                        id="departmentIsActive"
+                        checked
+                    >
+
+                    <span class="department-switch-slider"></span>
+
+                </label>
+
+                <div>
+                    <div class="department-status-title">
+                        Active Department
+                    </div>
+
+                    <div class="department-status-description">
+                        Allow this department to be used in the system.
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- Form Actions -->
+            <div class="department-form-actions">
+
+                <button
+                    type="button"
+                    id="cancelDepartmentBtn"
+                    class="department-btn department-btn-secondary"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    type="submit"
+                    id="saveDepartmentBtn"
+                    class="department-btn department-btn-primary"
+                >
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Save Department
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     DELETE CONFIRMATION MODAL
+========================================================= -->
+
+<div
+    id="deleteDepartmentModal"
+    class="department-modal"
+    hidden
+>
+
+    <div class="department-modal-overlay"></div>
+
+    <div class="department-delete-dialog">
+
+        <div class="department-delete-icon">
+            <i class="fa-solid fa-trash"></i>
+        </div>
+
+        <h2>
+            Delete Department?
+        </h2>
+
+        <p>
+            Are you sure you want to delete
+            <strong id="deleteDepartmentName"></strong>?
+            This action cannot be undone.
+        </p>
+
+        <div class="department-delete-actions">
+
+            <button
+                type="button"
+                id="cancelDeleteDepartment"
+                class="department-btn department-btn-secondary"
+            >
+                Cancel
+            </button>
+
+            <button
+                type="button"
+                id="confirmDeleteDepartment"
+                class="department-btn department-btn-danger"
+            >
+                <i class="fa-solid fa-trash"></i>
+                Delete
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- Department CSS -->
+<link
+    rel="stylesheet"
+    href="{% static 'css/academic-management/departments.css' %}"
+>
+
+<!-- Department JavaScript -->
+<script
+    src="{% static 'js/academic-management/departments.js' %}"
+></script>
+
+{% endblock content %}

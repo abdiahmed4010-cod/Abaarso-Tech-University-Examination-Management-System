@@ -1,0 +1,290 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="semester-page">
+
+    <!-- Page Header -->
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6">
+
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+                Semesters
+            </h1>
+
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                Manage semesters used across the university.
+            </p>
+        </div>
+
+        <button
+            type="button"
+            id="addSemesterBtn"
+            class="inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold text-white transition"
+            style="background-color: #8B1538;"
+        >
+            <i class="fa-solid fa-plus"></i>
+            Add Semester
+        </button>
+
+    </div>
+
+
+    <!-- Search -->
+    <div class="semester-toolbar">
+
+        <div class="semester-search">
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            <input
+                type="text"
+                id="semesterSearch"
+                placeholder="Search semesters..."
+                autocomplete="off"
+            >
+
+        </div>
+
+    </div>
+
+
+    <!-- Table -->
+    <div class="semester-table-card">
+
+        <div class="semester-table-wrapper">
+
+            <table class="semester-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Semester ID</th>
+
+                        <th>Semester Name</th>
+
+                        <th class="text-right">
+                            Actions
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="semestersTableBody">
+                    <!-- Loaded by JavaScript -->
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- Empty State -->
+        <div
+            id="semestersEmptyState"
+            class="semester-empty-state hidden"
+        >
+
+            <div class="semester-empty-icon">
+                <i class="fa-solid fa-layer-group"></i>
+            </div>
+
+            <h3>
+                No Semesters Found
+            </h3>
+
+            <p>
+                There are no semesters matching your search.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     ADD / EDIT SEMESTER MODAL
+========================================================= -->
+
+<div
+    id="semesterModal"
+    class="semester-modal"
+    hidden
+>
+
+    <div class="semester-modal-overlay"></div>
+
+
+    <div class="semester-modal-dialog">
+
+        <div class="semester-modal-header">
+
+            <div>
+
+                <h2 id="semesterModalTitle">
+                    Add Semester
+                </h2>
+
+                <p>
+                    Enter the semester information below.
+                </p>
+
+            </div>
+
+
+            <button
+                type="button"
+                id="closeSemesterModal"
+                class="semester-modal-close"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+        </div>
+
+
+        <form id="semesterForm">
+
+            <input
+                type="hidden"
+                id="semesterId"
+            >
+
+
+            <!-- Semester Name -->
+            <div class="semester-form-group">
+
+                <label for="semesterName">
+
+                    Semester Name
+
+                    <span>*</span>
+
+                </label>
+
+
+                <input
+                    type="text"
+                    id="semesterName"
+                    placeholder="e.g. Semester 1"
+                    maxlength="50"
+                    required
+                >
+
+            </div>
+
+
+            <!-- Form Actions -->
+            <div class="semester-form-actions">
+
+                <button
+                    type="button"
+                    id="cancelSemesterBtn"
+                    class="semester-btn semester-btn-secondary"
+                >
+                    Cancel
+                </button>
+
+
+                <button
+                    type="submit"
+                    id="saveSemesterBtn"
+                    class="semester-btn semester-btn-primary"
+                >
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Save Semester
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     DELETE CONFIRMATION MODAL
+========================================================= -->
+
+<div
+    id="deleteSemesterModal"
+    class="semester-modal"
+    hidden
+>
+
+    <div class="semester-modal-overlay"></div>
+
+
+    <div class="semester-delete-dialog">
+
+        <div class="semester-delete-icon">
+
+            <i class="fa-solid fa-trash"></i>
+
+        </div>
+
+
+        <h2>
+            Delete Semester?
+        </h2>
+
+
+        <p>
+
+            Are you sure you want to delete
+
+            <strong id="deleteSemesterName"></strong>?
+
+            This action cannot be undone.
+
+        </p>
+
+
+        <div class="semester-delete-actions">
+
+            <button
+                type="button"
+                id="cancelDeleteSemester"
+                class="semester-btn semester-btn-secondary"
+            >
+                Cancel
+            </button>
+
+
+            <button
+                type="button"
+                id="confirmDeleteSemester"
+                class="semester-btn semester-btn-danger"
+            >
+                <i class="fa-solid fa-trash"></i>
+                Delete
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- Semester CSS -->
+<link
+    rel="stylesheet"
+    href="{% static 'css/academic-management/semesters.css' %}"
+>
+
+
+<!-- Semester JavaScript -->
+<script
+    src="{% static 'js/academic-management/semesters.js' %}"
+></script>
+
+{% endblock content %}
