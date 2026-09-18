@@ -9,9 +9,16 @@ from .models import (
 )
 
 
-class AcademicYearSerializer(serializers.ModelSerializer):
+# =========================================================
+# ACADEMIC YEAR SERIALIZER
+# =========================================================
+
+class AcademicYearSerializer(
+    serializers.ModelSerializer
+):
     class Meta:
         model = AcademicYear
+
         fields = [
             "id",
             "name",
@@ -21,6 +28,7 @@ class AcademicYearSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         ]
+
         read_only_fields = [
             "id",
             "created_at",
@@ -28,11 +36,20 @@ class AcademicYearSerializer(serializers.ModelSerializer):
         ]
 
 
-class FacultySerializer(serializers.ModelSerializer):
-    department_count = serializers.SerializerMethodField()
+# =========================================================
+# FACULTY SERIALIZER
+# =========================================================
+
+class FacultySerializer(
+    serializers.ModelSerializer
+):
+    department_count = (
+        serializers.SerializerMethodField()
+    )
 
     class Meta:
         model = Faculty
+
         fields = [
             "id",
             "faculty_id",
@@ -44,6 +61,7 @@ class FacultySerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         ]
+
         read_only_fields = [
             "id",
             "faculty_id",
@@ -52,11 +70,20 @@ class FacultySerializer(serializers.ModelSerializer):
             "updated_at",
         ]
 
-    def get_department_count(self, obj):
+    def get_department_count(
+        self,
+        obj,
+    ):
         return obj.departments.count()
 
 
-class DepartmentSerializer(serializers.ModelSerializer):
+# =========================================================
+# DEPARTMENT SERIALIZER
+# =========================================================
+
+class DepartmentSerializer(
+    serializers.ModelSerializer
+):
     faculty_name = serializers.CharField(
         source="faculty.name",
         read_only=True,
@@ -69,6 +96,7 @@ class DepartmentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Department
+
         fields = [
             "id",
             "faculty",
@@ -81,6 +109,7 @@ class DepartmentSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         ]
+
         read_only_fields = [
             "id",
             "faculty_name",
@@ -90,19 +119,33 @@ class DepartmentSerializer(serializers.ModelSerializer):
         ]
 
 
-class SemesterSerializer(serializers.ModelSerializer):
+# =========================================================
+# SEMESTER SERIALIZER
+# =========================================================
+
+class SemesterSerializer(
+    serializers.ModelSerializer
+):
     class Meta:
         model = Semester
+
         fields = [
             "id",
             "name",
         ]
+
         read_only_fields = [
             "id",
         ]
 
 
-class CourseSerializer(serializers.ModelSerializer):
+# =========================================================
+# COURSE SERIALIZER
+# =========================================================
+
+class CourseSerializer(
+    serializers.ModelSerializer
+):
     faculty_name = serializers.CharField(
         source="faculty.name",
         read_only=True,
@@ -133,54 +176,79 @@ class CourseSerializer(serializers.ModelSerializer):
 
         fields = [
             "id",
+            "course_id",
+
             "faculty",
             "faculty_name",
             "faculty_code",
+
             "department",
             "department_name",
             "department_code",
+
             "semester",
             "semester_name",
-            "course_code",
+
             "name",
             "credit_hours",
             "is_active",
+
             "created_at",
             "updated_at",
         ]
 
         read_only_fields = [
             "id",
+            "course_id",
+
             "faculty_name",
             "faculty_code",
+
             "department_name",
             "department_code",
+
             "semester_name",
+
             "created_at",
             "updated_at",
         ]
 
-    def validate(self, attrs):
+    def validate(
+        self,
+        attrs,
+    ):
         faculty = attrs.get(
             "faculty",
-            getattr(self.instance, "faculty", None),
+            getattr(
+                self.instance,
+                "faculty",
+                None,
+            ),
         )
 
         department = attrs.get(
             "department",
-            getattr(self.instance, "department", None),
+            getattr(
+                self.instance,
+                "department",
+                None,
+            ),
         )
 
         if (
             faculty is not None
             and department is not None
-            and department.faculty_id != faculty.id
+            and department.faculty_id
+            != faculty.id
         ):
-            raise serializers.ValidationError({
-                "department": (
-                    "The selected department does not "
-                    "belong to the selected faculty."
-                )
-            })
+            raise serializers.ValidationError(
+                {
+                    "department": (
+                        "The selected department "
+                        "does not belong to the "
+                        "selected faculty."
+                    )
+                }
+            )
 
         return attrs

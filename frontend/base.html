@@ -57,6 +57,9 @@
         href="{% static 'css/styles.css' %}"
     >
 
+    <!-- Page-specific CSS -->
+    {% block extra_css %}{% endblock extra_css %}
+
     <!-- Base Page Styles -->
     <style>
 
@@ -187,7 +190,7 @@
             <!-- Dashboard -->
             <a
                 href="#"
-                class="sidebar-link active"
+                class="sidebar-link"
             >
                 <svg
                     class="w-4 h-4"
@@ -253,8 +256,8 @@
 
             <!-- Students -->
             <a
-                href="#"
-                class="sidebar-link"
+                href="{% url 'students-page' %}"
+                class="sidebar-link{% if request.resolver_match.url_name == 'students-page' %} active{% endif %}"
             >
                 <svg
                     class="w-4 h-4"
@@ -286,7 +289,7 @@
 
             <a
                 href="{% url 'faculties-page' %}"
-                class="sidebar-link"
+                class="sidebar-link{% if request.resolver_match.url_name == 'faculties-page' %} active{% endif %}"
             >
                 <svg
                     class="w-4 h-4"
@@ -308,8 +311,8 @@
 
             <!-- Departments -->
             <a
-                href="#"
-                class="sidebar-link"
+                href="{% url 'departments-page' %}"
+                class="sidebar-link{% if request.resolver_match.url_name == 'departments-page' %} active{% endif %}"
             >
                 <svg
                     class="w-4 h-4"
@@ -335,7 +338,7 @@
 
             <a
                 href="{% url 'academic-years-page' %}"
-                class="sidebar-link"
+                class="sidebar-link{% if request.resolver_match.url_name == 'academic-years-page' %} active{% endif %}"
             >
                 <svg
                     class="w-4 h-4"
@@ -357,8 +360,8 @@
 
             <!-- Semesters -->
             <a
-                href="#"
-                class="sidebar-link"
+                href="{% url 'semesters-page' %}"
+                class="sidebar-link{% if request.resolver_match.url_name == 'semesters-page' %} active{% endif %}"
             >
                 <svg
                     class="w-4 h-4"
@@ -380,8 +383,8 @@
 
             <!-- Courses -->
             <a
-                href="#"
-                class="sidebar-link"
+                href="{% url 'courses-page' %}"
+                class="sidebar-link{% if request.resolver_match.url_name == 'courses-page' %} active{% endif %}"
             >
                 <svg
                     class="w-4 h-4"
@@ -1248,6 +1251,9 @@
             );
 
     </script>
+
+    <!-- Page-specific JavaScript -->
+    {% block extra_js %}{% endblock extra_js %}
 
 </body>
 

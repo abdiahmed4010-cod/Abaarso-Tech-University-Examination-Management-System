@@ -100,7 +100,7 @@
                     <tr>
 
                         <th>
-                            Course Code
+                            Course ID
                         </th>
 
                         <th>
@@ -228,48 +228,6 @@
 
 
             <!-- =================================================
-                 COURSE CODE
-                 AUTOMATICALLY GENERATED
-            ================================================== -->
-
-            <div class="course-form-group">
-
-                <label>
-                    Course Code
-                </label>
-
-
-                <div class="course-auto-code">
-
-                    <div class="course-auto-code-icon">
-
-                        <i class="fa-solid fa-hashtag"></i>
-
-                    </div>
-
-
-                    <div class="course-auto-code-content">
-
-                        <span
-                            class="course-auto-code-value"
-                            id="courseCode"
-                        >
-                            Auto-generated
-                        </span>
-
-
-                        <small>
-                            Course code will be generated automatically from the selected semester.
-                        </small>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- =================================================
                  COURSE NAME
             ================================================== -->
 
@@ -291,6 +249,32 @@
                     maxlength="150"
                     required
                 >
+
+            </div>
+
+
+            <!-- =================================================
+                 COURSE ID
+            ================================================== -->
+
+            <div class="course-form-group">
+
+                <label for="courseIdDisplay">
+                    Course ID
+                </label>
+
+                <input
+                    type="text"
+                    id="courseIdDisplay"
+                    value="Auto-generated"
+                    readonly
+                    aria-readonly="true"
+                >
+
+                <small class="course-field-help">
+                    Course ID is generated automatically from the course name.
+                    Examples: ITP-001, DMS-001, WD-001, SE-001.
+                </small>
 
             </div>
 
@@ -386,34 +370,8 @@
 
 
                 <small class="course-field-help">
-                    The course code will be generated automatically after selecting a semester.
+                    Select the semester to assign the course academically.
                 </small>
-
-            </div>
-
-
-            <!-- =================================================
-                 AUTO COURSE CODE PREVIEW
-            ================================================== -->
-
-            <div
-                id="courseCodePreview"
-                class="course-code-preview"
-                hidden
-            >
-
-                <div class="course-code-preview-label">
-                    Generated Course Code
-                </div>
-
-
-                <div class="course-code-preview-value">
-                    <i class="fa-solid fa-barcode"></i>
-
-                    <span id="generatedCourseCode">
-                        ---
-                    </span>
-                </div>
 
             </div>
 
@@ -591,6 +549,15 @@
     href="{% static 'css/academic-management/courses.css' %}"
 >
 
+
+<style>
+    #courseIdDisplay {
+        width: 100%;
+        cursor: default;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+    }
+</style>
 
 <!-- =========================================================
      COURSE JAVASCRIPT

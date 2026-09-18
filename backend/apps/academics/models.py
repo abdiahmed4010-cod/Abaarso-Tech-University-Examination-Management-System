@@ -1,5 +1,10 @@
 from django.db import models
+import re
 
+
+# =========================================================
+# ACADEMIC YEAR
+# =========================================================
 
 class AcademicYear(models.Model):
     name = models.CharField(
@@ -29,6 +34,10 @@ class AcademicYear(models.Model):
     def __str__(self):
         return self.name
 
+
+# =========================================================
+# FACULTY
+# =========================================================
 
 class Faculty(models.Model):
     faculty_id = models.CharField(
@@ -70,21 +79,38 @@ class Faculty(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.faculty_id:
-            super().save(*args, **kwargs)
+            super().save(
+                *args,
+                **kwargs,
+            )
 
-            self.faculty_id = f"FAC-{self.id:03d}"
+            self.faculty_id = (
+                f"FAC-{self.id:03d}"
+            )
 
             super().save(
-                update_fields=["faculty_id"]
+                update_fields=[
+                    "faculty_id",
+                ]
             )
 
             return
 
-        super().save(*args, **kwargs)
+        super().save(
+            *args,
+            **kwargs,
+        )
 
     def __str__(self):
-        return f"{self.faculty_id} - {self.name}"
+        return (
+            f"{self.faculty_id} - "
+            f"{self.name}"
+        )
 
+
+# =========================================================
+# DEPARTMENT
+# =========================================================
 
 class Department(models.Model):
     faculty = models.ForeignKey(
@@ -122,18 +148,35 @@ class Department(models.Model):
 
         constraints = [
             models.UniqueConstraint(
-                fields=["faculty", "name"],
-                name="unique_department_name_per_faculty",
+                fields=[
+                    "faculty",
+                    "name",
+                ],
+                name=(
+                    "unique_department_name_per_faculty"
+                ),
             ),
             models.UniqueConstraint(
-                fields=["faculty", "code"],
-                name="unique_department_code_per_faculty",
+                fields=[
+                    "faculty",
+                    "code",
+                ],
+                name=(
+                    "unique_department_code_per_faculty"
+                ),
             ),
         ]
 
     def __str__(self):
-        return f"{self.code} - {self.name}"
+        return (
+            f"{self.code} - "
+            f"{self.name}"
+        )
 
+
+# =========================================================
+# SEMESTER
+# =========================================================
 
 class Semester(models.Model):
     name = models.CharField(
@@ -147,6 +190,10 @@ class Semester(models.Model):
     def __str__(self):
         return self.name
 
+
+# =========================================================
+# COURSE
+# =========================================================
 
 class Course(models.Model):
     faculty = models.ForeignKey(
@@ -167,10 +214,12 @@ class Course(models.Model):
         related_name="courses",
     )
 
-    course_code = models.CharField(
+    course_id = models.CharField(
         max_length=30,
         unique=True,
         editable=False,
+        null=True,
+        blank=True,
     )
 
     name = models.CharField(
@@ -192,60 +241,143 @@ class Course(models.Model):
     )
 
     class Meta:
-        ordering = ["course_code"]
+        ordering = ["course_id"]
 
-    def generate_course_code(self):
-        semester_name = self.semester.name.strip()
+    def generate_course_prefix(self):
+        """
+        Generate Course ID prefix from Course Name.
 
-        # Extract digits from semester name.
-        # Example:
-        # "Semester 1" -> "1"
-        # "Semester 2" -> "2"
-        digits = "".join(
-            character
-            for character in semester_name
-            if character.isdigit()
+        Examples:
+
+        Introduction to Programming
+        -> ITP
+
+        Database Management Systems
+        -> DMS
+
+        Web Development
+        -> WD
+
+        Software Engineering
+        -> SE
+        """
+
+        name = (
+            self.name or ""
+        ).strip()
+
+        if not name:
+            return "CRS"
+
+        words = re.findall(
+            r"[A-Za-z0-9]+",
+            name,
         )
 
-        if digits:
-            semester_code = f"SEM{digits}"
-        else:
-            # Fallback if the semester has no number.
-            semester_code = (
-                semester_name
-                .upper()
-                .replace(" ", "")[:10]
-            )
+        if not words:
+            return "CRS"
 
-        existing_count = (
+        prefix = "".join(
+            word[0].upper()
+            for word in words
+        )
+
+        prefix = prefix[:10]
+
+        return prefix or "CRS"
+
+    def generate_course_id(self):
+        """
+        Generate a unique Course ID.
+
+        Examples:
+
+        ITP-001
+        ITP-002
+        ITP-003
+
+        DMS-001
+        DMS-002
+
+        WD-001
+        WD-002
+        """
+
+        prefix = (
+            self.generate_course_prefix()
+        )
+
+        pattern = (
+            rf"^{re.escape(prefix)}-(\d+)$"
+        )
+
+        existing_ids = (
             Course.objects
             .filter(
-                semester=self.semester
+                course_id__startswith=(
+                    f"{prefix}-"
+                )
             )
             .exclude(
                 pk=self.pk
             )
-            .count()
+            .values_list(
+                "course_id",
+                flat=True,
+            )
         )
 
-        next_number = existing_count + 1
+        highest_number = 0
+
+        for existing_id in existing_ids:
+            if not existing_id:
+                continue
+
+            match = re.match(
+                pattern,
+                existing_id.upper(),
+            )
+
+            if not match:
+                continue
+
+            number = int(
+                match.group(1)
+            )
+
+            if number > highest_number:
+                highest_number = number
+
+        next_number = (
+            highest_number + 1
+        )
 
         return (
-            f"{semester_code}-"
+            f"{prefix}-"
             f"{next_number:03d}"
         )
 
     def save(self, *args, **kwargs):
+        """
+        Course ID is generated automatically
+        by the backend.
 
-        if self.semester_id:
-            self.course_code = (
-                self.generate_course_code()
+        The ID is based on the Course Name,
+        not on the Semester.
+        """
+
+        if not self.course_id:
+            self.course_id = (
+                self.generate_course_id()
             )
 
-        super().save(*args, **kwargs)
+        super().save(
+            *args,
+            **kwargs,
+        )
 
     def __str__(self):
         return (
-            f"{self.course_code} - "
+            f"{self.course_id} - "
             f"{self.name}"
         )

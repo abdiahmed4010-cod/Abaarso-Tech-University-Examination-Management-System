@@ -1,0 +1,1208 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    Students — ATU EMS
+{% endblock title %}
+
+{% block extra_css %}
+    <link
+        rel="stylesheet"
+        href="{% static 'css/student-management/students.css' %}"
+    >
+{% endblock extra_css %}
+
+{% block content %}
+
+<div
+    class="student-management-page"
+    id="studentManagementPage"
+>
+
+    <!-- =====================================================
+         PAGE HEADER
+         ===================================================== -->
+
+    <div class="flex flex-col gap-4 mb-6 lg:flex-row lg:items-center lg:justify-between">
+
+        <div>
+            <h1 class="text-2xl font-semibold tracking-tight">
+                Students
+            </h1>
+
+            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                Manage registered students and their academic information.
+            </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+
+            <!-- Upload Students -->
+            <button
+                type="button"
+                id="uploadStudentsBtn"
+                class="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+                title="Upload students from CSV or Excel"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="17"
+                    height="17"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <path d="M12 3v12"></path>
+                    <path d="m7 8 5-5 5 5"></path>
+                    <path d="M5 21h14"></path>
+                    <path d="M5 17v4"></path>
+                    <path d="M19 17v4"></path>
+                </svg>
+
+                <span>Upload Students</span>
+            </button>
+
+            <!-- Add Students -->
+            <button
+                type="button"
+                id="addStudentBtn"
+                class="inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold text-white transition hover:opacity-90"
+                style="background-color: #720E24;"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="17"
+                    height="17"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <path d="M12 5v14"></path>
+                    <path d="M5 12h14"></path>
+                </svg>
+
+                <span>Add Students</span>
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         SUMMARY
+         ===================================================== -->
+
+    <div class="grid grid-cols-1 gap-4 mb-6 sm:grid-cols-2 xl:grid-cols-4">
+
+        <!-- Total Students -->
+        <div class="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800">
+            <div class="flex items-center justify-between">
+
+                <div>
+                    <p class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                        Total Students
+                    </p>
+
+                    <p
+                        id="totalStudentsCount"
+                        class="mt-2 text-2xl font-semibold"
+                    >
+                        0
+                    </p>
+                </div>
+
+                <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-700">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="19"
+                        height="19"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                </div>
+
+            </div>
+        </div>
+
+
+        <!-- Active Students -->
+        <div class="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800">
+            <div class="flex items-center justify-between">
+
+                <div>
+                    <p class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                        Active Students
+                    </p>
+
+                    <p
+                        id="activeStudentsCount"
+                        class="mt-2 text-2xl font-semibold"
+                    >
+                        0
+                    </p>
+                </div>
+
+                <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="19"
+                        height="19"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <path d="M20 6 9 17l-5-5"></path>
+                    </svg>
+                </div>
+
+            </div>
+        </div>
+
+
+        <!-- Inactive Students -->
+        <div class="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800">
+            <div class="flex items-center justify-between">
+
+                <div>
+                    <p class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                        Inactive Students
+                    </p>
+
+                    <p
+                        id="inactiveStudentsCount"
+                        class="mt-2 text-2xl font-semibold"
+                    >
+                        0
+                    </p>
+                </div>
+
+                <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="19"
+                        height="19"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <circle cx="12" cy="12" r="9"></circle>
+                        <path d="M8 12h8"></path>
+                    </svg>
+                </div>
+
+            </div>
+        </div>
+
+
+        <!-- Graduated -->
+        <div class="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800">
+            <div class="flex items-center justify-between">
+
+                <div>
+                    <p class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                        Graduated
+                    </p>
+
+                    <p
+                        id="graduatedStudentsCount"
+                        class="mt-2 text-2xl font-semibold"
+                    >
+                        0
+                    </p>
+                </div>
+
+                <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="19"
+                        height="19"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <path d="M22 10 12 5 2 10l10 5 10-5Z"></path>
+                        <path d="M6 12v5c3 2 9 2 12 0v-5"></path>
+                    </svg>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         FILTER / SEARCH TOOLBAR
+         ===================================================== -->
+
+    <div class="mb-4 rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800">
+
+        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-12">
+
+            <!-- Search -->
+            <div class="sm:col-span-2 lg:col-span-5">
+
+                <label
+                    for="studentSearch"
+                    class="sr-only"
+                >
+                    Search students
+                </label>
+
+                <div class="relative">
+
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="17"
+                        height="17"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                    >
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.3-4.3"></path>
+                    </svg>
+
+                    <input
+                        type="search"
+                        id="studentSearch"
+                        placeholder="Search by Student ID or name..."
+                        autocomplete="off"
+                        class="h-10 w-full rounded-lg border border-slate-300 bg-white pl-10 pr-3 text-sm outline-none transition focus:border-[#720E24] focus:ring-1 focus:ring-[#720E24] dark:border-slate-600 dark:bg-slate-900 dark:text-white"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- Department -->
+            <div class="sm:col-span-1 lg:col-span-2">
+
+                <label
+                    for="studentDepartmentFilter"
+                    class="sr-only"
+                >
+                    Department
+                </label>
+
+                <select
+                    id="studentDepartmentFilter"
+                    class="h-10 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm outline-none transition focus:border-[#720E24] focus:ring-1 focus:ring-[#720E24] dark:border-slate-600 dark:bg-slate-900 dark:text-white"
+                >
+                    <option value="">
+                        All Departments
+                    </option>
+                </select>
+
+            </div>
+
+
+            <!-- Semester -->
+            <div class="sm:col-span-1 lg:col-span-2">
+
+                <label
+                    for="studentSemesterFilter"
+                    class="sr-only"
+                >
+                    Semester
+                </label>
+
+                <select
+                    id="studentSemesterFilter"
+                    class="h-10 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm outline-none transition focus:border-[#720E24] focus:ring-1 focus:ring-[#720E24] dark:border-slate-600 dark:bg-slate-900 dark:text-white"
+                >
+                    <option value="">
+                        All Semesters
+                    </option>
+                </select>
+
+            </div>
+
+
+            <!-- Status -->
+            <div class="sm:col-span-1 lg:col-span-2">
+
+                <label
+                    for="studentStatusFilter"
+                    class="sr-only"
+                >
+                    Status
+                </label>
+
+                <select
+                    id="studentStatusFilter"
+                    class="h-10 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm outline-none transition focus:border-[#720E24] focus:ring-1 focus:ring-[#720E24] dark:border-slate-600 dark:bg-slate-900 dark:text-white"
+                >
+                    <option value="">
+                        All Status
+                    </option>
+
+                    <option value="ACTIVE">
+                        Active
+                    </option>
+
+                    <option value="INACTIVE">
+                        Inactive
+                    </option>
+
+                    <option value="GRADUATED">
+                        Graduated
+                    </option>
+                </select>
+
+            </div>
+
+
+            <!-- Reset -->
+            <div class="sm:col-span-1 lg:col-span-1">
+
+                <button
+                    type="button"
+                    id="resetStudentFiltersBtn"
+                    class="h-10 w-full rounded-lg border border-slate-300 bg-white px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-700"
+                >
+                    Reset
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         STUDENT TABLE
+         ===================================================== -->
+
+    <div class="rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-800">
+
+        <!-- Table Header -->
+        <div class="flex flex-col gap-3 border-b border-slate-200 px-4 py-4 sm:flex-row sm:items-center sm:justify-between dark:border-slate-700">
+
+            <div>
+                <h2 class="text-base font-semibold">
+                    Registered Students
+                </h2>
+
+                <p class="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                    Students registered in the examination management system.
+                </p>
+            </div>
+
+            <div class="text-xs text-slate-500 dark:text-slate-400">
+                <span id="studentResultCount">
+                    0
+                </span>
+                students
+            </div>
+
+        </div>
+
+
+        <!-- Contained horizontal scroll -->
+        <div class="student-table-scroll overflow-x-auto">
+
+            <table class="w-full min-w-[760px] text-left">
+
+                <thead class="border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-900/60">
+
+                    <tr>
+
+                        <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                            Student ID
+                        </th>
+
+                        <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                            Name
+                        </th>
+
+                        <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                            Gender
+                        </th>
+
+                        <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                            Department
+                        </th>
+
+                        <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                            Semester
+                        </th>
+
+                        <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                            Status
+                        </th>
+
+                        <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                            Actions
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody
+                    id="studentsTableBody"
+                    class="divide-y divide-slate-100 dark:divide-slate-700"
+                >
+                    <!-- Students loaded by JavaScript -->
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- Empty State -->
+        <div
+            id="studentsEmptyState"
+            class="hidden px-6 py-14 text-center"
+        >
+
+            <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-300">
+
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+
+            </div>
+
+            <h3 class="mt-4 text-sm font-semibold">
+                No students found
+            </h3>
+
+            <p class="mx-auto mt-1 max-w-md text-sm text-slate-500 dark:text-slate-400">
+                No registered students match the current search or filters.
+            </p>
+
+        </div>
+
+
+        <!-- Loading State -->
+        <div
+            id="studentsLoadingState"
+            class="hidden px-6 py-14 text-center"
+        >
+
+            <div class="mx-auto h-7 w-7 animate-spin rounded-full border-2 border-slate-300 border-t-[#720E24]"></div>
+
+            <p class="mt-3 text-sm text-slate-500 dark:text-slate-400">
+                Loading students...
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         ADD / EDIT STUDENT MODAL
+         ===================================================== -->
+
+    <div
+        id="studentModal"
+        class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-4"
+    >
+
+        <div
+            class="student-modal-panel max-h-[92vh] w-full max-w-4xl overflow-y-auto rounded-xl bg-white shadow-xl dark:bg-slate-800"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="studentModalTitle"
+        >
+
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between border-b border-slate-200 px-5 py-4 dark:border-slate-700">
+
+                <div>
+                    <h2
+                        id="studentModalTitle"
+                        class="text-lg font-semibold"
+                    >
+                        Add Student
+                    </h2>
+
+                    <p class="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                        Register a student with their academic information.
+                    </p>
+                </div>
+
+                <button
+                    type="button"
+                    id="closeStudentModalBtn"
+                    class="flex h-9 w-9 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-700 dark:hover:text-slate-200"
+                    aria-label="Close"
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="19"
+                        height="19"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <path d="M18 6 6 18"></path>
+                        <path d="m6 6 12 12"></path>
+                    </svg>
+                </button>
+
+            </div>
+
+
+            <!-- Modal Form -->
+            <form
+                id="studentForm"
+                novalidate
+            >
+
+                <div class="p-5">
+
+                    <!-- Student Information -->
+                    <div class="mb-6">
+
+                        <h3 class="mb-3 text-sm font-semibold">
+                            Student Information
+                        </h3>
+
+                        <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+
+                            <!-- Student ID -->
+                            <div>
+                                <label
+                                    for="studentId"
+                                    class="mb-1.5 block text-sm font-medium"
+                                >
+                                    Student ID
+                                    <span class="text-red-500">*</span>
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="studentId"
+                                    name="student_id"
+                                    maxlength="30"
+                                    required
+                                    placeholder="e.g. ATU-2026-001"
+                                    class="student-form-input"
+                                >
+
+                                <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                                    Enter the official Student ID manually.
+                                </p>
+                            </div>
+
+
+                            <!-- First Name -->
+                            <div>
+                                <label
+                                    for="firstName"
+                                    class="mb-1.5 block text-sm font-medium"
+                                >
+                                    First Name
+                                    <span class="text-red-500">*</span>
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="firstName"
+                                    name="first_name"
+                                    maxlength="100"
+                                    required
+                                    class="student-form-input"
+                                >
+                            </div>
+
+
+                            <!-- Middle Name -->
+                            <div>
+                                <label
+                                    for="middleName"
+                                    class="mb-1.5 block text-sm font-medium"
+                                >
+                                    Middle Name
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="middleName"
+                                    name="middle_name"
+                                    maxlength="100"
+                                    class="student-form-input"
+                                >
+                            </div>
+
+
+                            <!-- Last Name -->
+                            <div>
+                                <label
+                                    for="lastName"
+                                    class="mb-1.5 block text-sm font-medium"
+                                >
+                                    Last Name
+                                    <span class="text-red-500">*</span>
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="lastName"
+                                    name="last_name"
+                                    maxlength="100"
+                                    required
+                                    class="student-form-input"
+                                >
+                            </div>
+
+
+                            <!-- Gender -->
+                            <div>
+                                <label
+                                    for="studentGender"
+                                    class="mb-1.5 block text-sm font-medium"
+                                >
+                                    Gender
+                                    <span class="text-red-500">*</span>
+                                </label>
+
+                                <select
+                                    id="studentGender"
+                                    name="gender"
+                                    required
+                                    class="student-form-input"
+                                >
+                                    <option value="">
+                                        Select Gender
+                                    </option>
+
+                                    <option value="MALE">
+                                        Male
+                                    </option>
+
+                                    <option value="FEMALE">
+                                        Female
+                                    </option>
+                                </select>
+                            </div>
+
+
+                            <!-- Date of Birth -->
+                            <div>
+                                <label
+                                    for="studentDateOfBirth"
+                                    class="mb-1.5 block text-sm font-medium"
+                                >
+                                    Date of Birth
+                                </label>
+
+                                <input
+                                    type="date"
+                                    id="studentDateOfBirth"
+                                    name="date_of_birth"
+                                    class="student-form-input"
+                                >
+                            </div>
+
+
+                            <!-- Phone -->
+                            <div>
+                                <label
+                                    for="studentPhone"
+                                    class="mb-1.5 block text-sm font-medium"
+                                >
+                                    Phone
+                                </label>
+
+                                <input
+                                    type="tel"
+                                    id="studentPhone"
+                                    name="phone"
+                                    maxlength="30"
+                                    placeholder="Phone number"
+                                    class="student-form-input"
+                                >
+                            </div>
+
+
+                            <!-- Address -->
+                            <div class="md:col-span-2">
+                                <label
+                                    for="studentAddress"
+                                    class="mb-1.5 block text-sm font-medium"
+                                >
+                                    Address
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="studentAddress"
+                                    name="address"
+                                    maxlength="255"
+                                    placeholder="Student address"
+                                    class="student-form-input"
+                                >
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Academic Information -->
+                    <div>
+
+                        <h3 class="mb-3 text-sm font-semibold">
+                            Academic Information
+                        </h3>
+
+                        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+
+                            <!-- Faculty -->
+                            <div>
+                                <label
+                                    for="studentFaculty"
+                                    class="mb-1.5 block text-sm font-medium"
+                                >
+                                    Faculty
+                                    <span class="text-red-500">*</span>
+                                </label>
+
+                                <select
+                                    id="studentFaculty"
+                                    name="faculty"
+                                    required
+                                    class="student-form-input"
+                                >
+                                    <option value="">
+                                        Select Faculty
+                                    </option>
+                                </select>
+                            </div>
+
+
+                            <!-- Department -->
+                            <div>
+                                <label
+                                    for="studentDepartment"
+                                    class="mb-1.5 block text-sm font-medium"
+                                >
+                                    Department
+                                    <span class="text-red-500">*</span>
+                                </label>
+
+                                <select
+                                    id="studentDepartment"
+                                    name="department"
+                                    required
+                                    class="student-form-input"
+                                    disabled
+                                >
+                                    <option value="">
+                                        Select Department
+                                    </option>
+                                </select>
+                            </div>
+
+
+                            <!-- Semester -->
+                            <div>
+                                <label
+                                    for="studentSemester"
+                                    class="mb-1.5 block text-sm font-medium"
+                                >
+                                    Semester
+                                    <span class="text-red-500">*</span>
+                                </label>
+
+                                <select
+                                    id="studentSemester"
+                                    name="semester"
+                                    required
+                                    class="student-form-input"
+                                >
+                                    <option value="">
+                                        Select Semester
+                                    </option>
+                                </select>
+                            </div>
+
+
+                            <!-- Academic Year -->
+                            <div>
+                                <label
+                                    for="studentAcademicYear"
+                                    class="mb-1.5 block text-sm font-medium"
+                                >
+                                    Academic Year
+                                    <span class="text-red-500">*</span>
+                                </label>
+
+                                <select
+                                    id="studentAcademicYear"
+                                    name="academic_year"
+                                    required
+                                    class="student-form-input"
+                                >
+                                    <option value="">
+                                        Select Academic Year
+                                    </option>
+                                </select>
+                            </div>
+
+
+                            <!-- Program -->
+                            <div>
+                                <label
+                                    for="studentProgram"
+                                    class="mb-1.5 block text-sm font-medium"
+                                >
+                                    Program
+                                    <span class="text-red-500">*</span>
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="studentProgram"
+                                    name="program"
+                                    maxlength="150"
+                                    required
+                                    placeholder="e.g. Software Engineering"
+                                    class="student-form-input"
+                                >
+                            </div>
+
+
+                            <!-- Admission Date -->
+                            <div>
+                                <label
+                                    for="studentAdmissionDate"
+                                    class="mb-1.5 block text-sm font-medium"
+                                >
+                                    Admission Date
+                                </label>
+
+                                <input
+                                    type="date"
+                                    id="studentAdmissionDate"
+                                    name="admission_date"
+                                    class="student-form-input"
+                                >
+                            </div>
+
+
+                            <!-- Status -->
+                            <div>
+                                <label
+                                    for="studentStatus"
+                                    class="mb-1.5 block text-sm font-medium"
+                                >
+                                    Status
+                                    <span class="text-red-500">*</span>
+                                </label>
+
+                                <select
+                                    id="studentStatus"
+                                    name="status"
+                                    required
+                                    class="student-form-input"
+                                >
+                                    <option value="ACTIVE">
+                                        Active
+                                    </option>
+
+                                    <option value="INACTIVE">
+                                        Inactive
+                                    </option>
+
+                                    <option value="GRADUATED">
+                                        Graduated
+                                    </option>
+                                </select>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Modal Footer -->
+                <div class="flex flex-col-reverse gap-2 border-t border-slate-200 px-5 py-4 sm:flex-row sm:justify-end dark:border-slate-700">
+
+                    <button
+                        type="button"
+                        id="cancelStudentBtn"
+                        class="rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-700"
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        type="submit"
+                        id="saveStudentBtn"
+                        class="rounded-lg px-5 py-2.5 text-sm font-semibold text-white transition hover:opacity-90"
+                        style="background-color: #720E24;"
+                    >
+                        Save Student
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         DELETE CONFIRMATION MODAL
+         ===================================================== -->
+
+    <div
+        id="deleteStudentModal"
+        class="fixed inset-0 z-[60] hidden items-center justify-center bg-black/50 p-4"
+    >
+
+        <div class="w-full max-w-md rounded-xl bg-white shadow-xl dark:bg-slate-800">
+
+            <div class="p-5">
+
+                <div class="flex h-11 w-11 items-center justify-center rounded-full bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400">
+
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="21"
+                        height="21"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <path d="M3 6h18"></path>
+                        <path d="M8 6V4h8v2"></path>
+                        <path d="M19 6v14H5V6"></path>
+                        <path d="M10 11v5"></path>
+                        <path d="M14 11v5"></path>
+                    </svg>
+
+                </div>
+
+                <h2 class="mt-4 text-lg font-semibold">
+                    Delete Student
+                </h2>
+
+                <p class="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">
+                    Are you sure you want to delete
+                    <strong
+                        id="deleteStudentName"
+                        class="font-semibold text-slate-700 dark:text-slate-200"
+                    ></strong>?
+                    This action cannot be undone.
+                </p>
+
+            </div>
+
+            <div class="flex flex-col-reverse gap-2 border-t border-slate-200 px-5 py-4 sm:flex-row sm:justify-end dark:border-slate-700">
+
+                <button
+                    type="button"
+                    id="cancelDeleteStudentBtn"
+                    class="rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-700"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    type="button"
+                    id="confirmDeleteStudentBtn"
+                    class="rounded-lg bg-red-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-red-700"
+                >
+                    Delete Student
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         UPLOAD STUDENTS MODAL
+         ===================================================== -->
+
+    <div
+        id="uploadStudentsModal"
+        class="fixed inset-0 z-[60] hidden items-center justify-center bg-black/50 p-4"
+    >
+
+        <div class="w-full max-w-lg rounded-xl bg-white shadow-xl dark:bg-slate-800">
+
+            <div class="flex items-center justify-between border-b border-slate-200 px-5 py-4 dark:border-slate-700">
+
+                <div>
+                    <h2 class="text-lg font-semibold">
+                        Upload Students
+                    </h2>
+
+                    <p class="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                        Import multiple student records from a file.
+                    </p>
+                </div>
+
+                <button
+                    type="button"
+                    id="closeUploadStudentsModalBtn"
+                    class="flex h-9 w-9 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 dark:hover:bg-slate-700"
+                    aria-label="Close"
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="19"
+                        height="19"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <path d="M18 6 6 18"></path>
+                        <path d="m6 6 12 12"></path>
+                    </svg>
+                </button>
+
+            </div>
+
+
+            <div class="p-5">
+
+                <div class="rounded-lg border border-dashed border-slate-300 bg-slate-50 p-6 text-center dark:border-slate-600 dark:bg-slate-900">
+
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="30"
+                        height="30"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="mx-auto text-slate-400"
+                    >
+                        <path d="M12 3v12"></path>
+                        <path d="m7 8 5-5 5 5"></path>
+                        <path d="M5 21h14"></path>
+                    </svg>
+
+                    <h3 class="mt-3 text-sm font-semibold">
+                        Select Student File
+                    </h3>
+
+                    <p class="mt-1 text-xs leading-5 text-slate-500 dark:text-slate-400">
+                        CSV or Excel files can be imported.
+                    </p>
+
+                    <input
+                        type="file"
+                        id="studentUploadFile"
+                        accept=".csv,.xlsx,.xls"
+                        class="mt-4 block w-full text-sm"
+                    >
+
+                </div>
+
+                <p class="mt-3 text-xs leading-5 text-slate-500 dark:text-slate-400">
+                    The upload process will validate Student IDs,
+                    academic relationships, duplicate records,
+                    and required fields before importing.
+                </p>
+
+            </div>
+
+
+            <div class="flex flex-col-reverse gap-2 border-t border-slate-200 px-5 py-4 sm:flex-row sm:justify-end dark:border-slate-700">
+
+                <button
+                    type="button"
+                    id="cancelUploadStudentsBtn"
+                    class="rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-700"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    type="button"
+                    id="processStudentUploadBtn"
+                    class="rounded-lg px-4 py-2.5 text-sm font-semibold text-white transition hover:opacity-90"
+                    style="background-color: #720E24;"
+                >
+                    Continue
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock content %}
+
+
+{% block extra_js %}
+    <script
+        src="{% static 'js/student-management/students.js' %}"
+    ></script>
+{% endblock extra_js %}

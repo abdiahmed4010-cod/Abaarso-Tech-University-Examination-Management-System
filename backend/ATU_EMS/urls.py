@@ -3,8 +3,21 @@ from django.urls import include, path
 
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
+    # Django Admin
+    path(
+        "admin/",
+        admin.site.urls,
+    ),
 
     # Academic Management
-    path("", include("apps.academics.urls")),
+    path(
+        "",
+        include("apps.academics.urls"),
+    ),
+
+    # Student Management
+    path(
+        "",
+        include("apps.students.urls"),
+    ),
 ]

@@ -1,12 +1,30 @@
 /* =========================================================
    COURSES MANAGEMENT
-   ATU Examination Management System
+   ATU EXAMINATION MANAGEMENT SYSTEM
+
+   Course ID examples:
+   Introduction to Programming -> ITP-001
+   Database Management Systems -> DMS-001
+   Web Development -> WD-001
+   Software Engineering -> SE-001
+========================================================= */
+
+"use strict";
+
+
+/* =========================================================
+   API URLS
 ========================================================= */
 
 const COURSES_API_URL = "/api/courses/";
 const FACULTIES_API_URL = "/api/faculties/";
 const DEPARTMENTS_API_URL = "/api/departments/";
 const SEMESTERS_API_URL = "/api/semesters/";
+
+
+/* =========================================================
+   APPLICATION STATE
+========================================================= */
 
 let courses = [];
 let faculties = [];
@@ -17,93 +35,176 @@ let currentCourseId = null;
 
 
 /* =========================================================
-   DOM ELEMENTS
+   DOM REFERENCES
 ========================================================= */
 
-const courseSearch =
-    document.getElementById("courseSearch");
+let courseSearch;
+let coursesTableBody;
+let coursesEmptyState;
 
-const coursesTableBody =
-    document.getElementById("coursesTableBody");
+let addCourseBtn;
 
-const coursesEmptyState =
-    document.getElementById("coursesEmptyState");
+let courseModal;
+let courseModalTitle;
+let closeCourseModal;
+let cancelCourseBtn;
+let courseForm;
 
-const addCourseBtn =
-    document.getElementById("addCourseBtn");
+let courseIdInput;
+let courseIdDisplay;
+let courseNameInput;
+let courseFacultyInput;
+let courseDepartmentInput;
+let courseSemesterInput;
+let courseCreditHoursInput;
+let courseIsActiveInput;
+let saveCourseBtn;
 
-const courseModal =
-    document.getElementById("courseModal");
+let courseFacultyFilter;
+let courseDepartmentFilter;
+let courseSemesterFilter;
 
-const courseModalTitle =
-    document.getElementById("courseModalTitle");
-
-const closeCourseModal =
-    document.getElementById("closeCourseModal");
-
-const cancelCourseBtn =
-    document.getElementById("cancelCourseBtn");
-
-const courseForm =
-    document.getElementById("courseForm");
-
-const courseIdInput =
-    document.getElementById("courseId");
-
-const courseCodeDisplay =
-    document.getElementById("courseCode");
-
-const courseNameInput =
-    document.getElementById("courseName");
-
-const courseFacultyInput =
-    document.getElementById("courseFaculty");
-
-const courseDepartmentInput =
-    document.getElementById("courseDepartment");
-
-const courseSemesterInput =
-    document.getElementById("courseSemester");
-
-const courseCreditHoursInput =
-    document.getElementById("courseCreditHours");
-
-const courseIsActiveInput =
-    document.getElementById("courseIsActive");
-
-const saveCourseBtn =
-    document.getElementById("saveCourseBtn");
-
-const courseFacultyFilter =
-    document.getElementById("courseFacultyFilter");
-
-const courseDepartmentFilter =
-    document.getElementById("courseDepartmentFilter");
-
-const courseSemesterFilter =
-    document.getElementById("courseSemesterFilter");
-
-const courseCodePreview =
-    document.getElementById("courseCodePreview");
-
-const generatedCourseCode =
-    document.getElementById("generatedCourseCode");
-
-const deleteCourseModal =
-    document.getElementById("deleteCourseModal");
-
-const deleteCourseName =
-    document.getElementById("deleteCourseName");
-
-const cancelDeleteCourse =
-    document.getElementById("cancelDeleteCourse");
-
-const confirmDeleteCourse =
-    document.getElementById("confirmDeleteCourse");
+let deleteCourseModal;
+let deleteCourseName;
+let cancelDeleteCourse;
+let confirmDeleteCourse;
 
 
 /* =========================================================
-   CSRF TOKEN
+   DOM INITIALIZATION
+========================================================= */
+
+function initializeDomReferences() {
+
+    courseSearch =
+        document.getElementById(
+            "courseSearch"
+        );
+
+    coursesTableBody =
+        document.getElementById(
+            "coursesTableBody"
+        );
+
+    coursesEmptyState =
+        document.getElementById(
+            "coursesEmptyState"
+        );
+
+    addCourseBtn =
+        document.getElementById(
+            "addCourseBtn"
+        );
+
+    courseModal =
+        document.getElementById(
+            "courseModal"
+        );
+
+    courseModalTitle =
+        document.getElementById(
+            "courseModalTitle"
+        );
+
+    closeCourseModal =
+        document.getElementById(
+            "closeCourseModal"
+        );
+
+    cancelCourseBtn =
+        document.getElementById(
+            "cancelCourseBtn"
+        );
+
+    courseForm =
+        document.getElementById(
+            "courseForm"
+        );
+
+    courseIdInput =
+        document.getElementById(
+            "courseId"
+        );
+
+    courseIdDisplay =
+        document.getElementById(
+            "courseIdDisplay"
+        );
+
+    courseNameInput =
+        document.getElementById(
+            "courseName"
+        );
+
+    courseFacultyInput =
+        document.getElementById(
+            "courseFaculty"
+        );
+
+    courseDepartmentInput =
+        document.getElementById(
+            "courseDepartment"
+        );
+
+    courseSemesterInput =
+        document.getElementById(
+            "courseSemester"
+        );
+
+    courseCreditHoursInput =
+        document.getElementById(
+            "courseCreditHours"
+        );
+
+    courseIsActiveInput =
+        document.getElementById(
+            "courseIsActive"
+        );
+
+    saveCourseBtn =
+        document.getElementById(
+            "saveCourseBtn"
+        );
+
+    courseFacultyFilter =
+        document.getElementById(
+            "courseFacultyFilter"
+        );
+
+    courseDepartmentFilter =
+        document.getElementById(
+            "courseDepartmentFilter"
+        );
+
+    courseSemesterFilter =
+        document.getElementById(
+            "courseSemesterFilter"
+        );
+
+    deleteCourseModal =
+        document.getElementById(
+            "deleteCourseModal"
+        );
+
+    deleteCourseName =
+        document.getElementById(
+            "deleteCourseName"
+        );
+
+    cancelDeleteCourse =
+        document.getElementById(
+            "cancelDeleteCourse"
+        );
+
+    confirmDeleteCourse =
+        document.getElementById(
+            "confirmDeleteCourse"
+        );
+}
+
+
+/* =========================================================
+   CSRF
 ========================================================= */
 
 function getCookie(name) {
@@ -111,9 +212,12 @@ function getCookie(name) {
     const cookies =
         document.cookie.split(";");
 
-    for (let cookie of cookies) {
+    for (
+        let cookie of cookies
+    ) {
 
-        cookie = cookie.trim();
+        cookie =
+            cookie.trim();
 
         if (
             cookie.startsWith(
@@ -132,35 +236,310 @@ function getCookie(name) {
     return null;
 }
 
-const csrfToken =
-    getCookie("csrftoken");
 
+function getCsrfToken() {
 
-/* =========================================================
-   ESCAPE HTML
-========================================================= */
-
-function escapeHtml(value) {
-
-    return String(value ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+    return (
+        getCookie("csrftoken") ||
+        ""
+    );
 }
 
 
 /* =========================================================
-   FETCH ALL PAGINATED DATA
+   HTML ESCAPE
 ========================================================= */
 
-async function fetchAllPages(url) {
+function escapeHtml(value) {
+
+    return String(
+        value ?? ""
+    )
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+}
+
+
+/* =========================================================
+   TEXT NORMALIZATION
+========================================================= */
+
+function normalizeText(value) {
+
+    return String(
+        value ?? ""
+    )
+        .trim()
+        .replace(
+            /\s+/g,
+            " "
+        );
+}
+
+
+/* =========================================================
+   COURSE ID PREFIX
+========================================================= */
+
+function generateCoursePrefix(
+    courseName
+) {
+
+    const name =
+        normalizeText(
+            courseName
+        );
+
+    if (!name) {
+        return "";
+    }
+
+    const words =
+        name
+            .replace(
+                /[^A-Za-z0-9\s]/g,
+                " "
+            )
+            .split(/\s+/)
+            .filter(Boolean);
+
+    if (
+        words.length === 0
+    ) {
+        return "";
+    }
+
+    /*
+       First letter of every word.
+
+       Introduction to Programming
+       -> ITP
+
+       Database Management Systems
+       -> DMS
+
+       Web Development
+       -> WD
+
+       Software Engineering
+       -> SE
+    */
+
+    const prefix =
+        words
+            .map(
+                word =>
+                    word
+                        .charAt(0)
+                        .toUpperCase()
+            )
+            .join("");
+
+    return prefix.substring(
+        0,
+        10
+    );
+}
+
+
+/* =========================================================
+   GET NEXT COURSE NUMBER
+========================================================= */
+
+function getNextCourseNumber(
+    prefix,
+    ignoreCourseId = null
+) {
+
+    if (!prefix) {
+        return 1;
+    }
+
+    const usedNumbers =
+        new Set();
+
+    courses.forEach(
+        course => {
+
+            if (
+                ignoreCourseId !== null &&
+                Number(course.id) ===
+                    Number(
+                        ignoreCourseId
+                    )
+            ) {
+
+                return;
+            }
+
+            const existingId =
+                String(
+                    course.course_id ||
+                    ""
+                )
+                    .trim()
+                    .toUpperCase();
+
+            if (!existingId) {
+                return;
+            }
+
+            const escapedPrefix =
+                prefix.replace(
+                    /[.*+?^${}()|[\]\\]/g,
+                    "\\$&"
+                );
+
+            const pattern =
+                new RegExp(
+                    `^${escapedPrefix}-(\\d+)$`
+                );
+
+            const match =
+                existingId.match(
+                    pattern
+                );
+
+            if (!match) {
+                return;
+            }
+
+            const number =
+                Number(
+                    match[1]
+                );
+
+            if (
+                Number.isInteger(
+                    number
+                ) &&
+                number > 0
+            ) {
+
+                usedNumbers.add(
+                    number
+                );
+            }
+        }
+    );
+
+    let nextNumber = 1;
+
+    while (
+        usedNumbers.has(
+            nextNumber
+        )
+    ) {
+
+        nextNumber++;
+    }
+
+    return nextNumber;
+}
+
+
+/* =========================================================
+   BUILD COURSE ID
+========================================================= */
+
+function buildCourseId(
+    courseName,
+    ignoreCourseId = null
+) {
+
+    const prefix =
+        generateCoursePrefix(
+            courseName
+        );
+
+    if (!prefix) {
+        return "";
+    }
+
+    const number =
+        getNextCourseNumber(
+            prefix,
+            ignoreCourseId
+        );
+
+    return (
+        `${prefix}-` +
+        String(
+            number
+        ).padStart(
+            3,
+            "0"
+        )
+    );
+}
+
+
+/* =========================================================
+   UPDATE COURSE ID PREVIEW
+========================================================= */
+
+function updateCourseIdPreview() {
+
+    if (!courseIdDisplay) {
+        return;
+    }
+
+    const courseName =
+        normalizeText(
+            courseNameInput
+                ? courseNameInput.value
+                : ""
+        );
+
+    if (!courseName) {
+
+        courseIdDisplay.value =
+            "Auto-generated";
+
+        return;
+    }
+
+    const generatedId =
+        buildCourseId(
+            courseName,
+            currentCourseId
+        );
+
+    courseIdDisplay.value =
+        generatedId ||
+        "Auto-generated";
+}
+
+
+/* =========================================================
+   FETCH PAGINATED API
+========================================================= */
+
+async function fetchAllPages(
+    url
+) {
 
     let nextUrl = url;
 
     const results = [];
-
 
     while (nextUrl) {
 
@@ -180,7 +559,6 @@ async function fetchAllPages(url) {
                 }
             );
 
-
         if (!response.ok) {
 
             throw new Error(
@@ -188,35 +566,45 @@ async function fetchAllPages(url) {
             );
         }
 
-
         const data =
             await response.json();
 
+        /*
+           Non-paginated response.
+        */
 
-        if (Array.isArray(data)) {
+        if (
+            Array.isArray(data)
+        ) {
 
-            results.push(...data);
+            results.push(
+                ...data
+            );
 
             nextUrl = null;
 
-        } else {
-
-            if (
-                Array.isArray(
-                    data.results
-                )
-            ) {
-
-                results.push(
-                    ...data.results
-                );
-            }
-
-            nextUrl =
-                data.next || null;
+            continue;
         }
-    }
 
+        /*
+           DRF paginated response.
+        */
+
+        if (
+            Array.isArray(
+                data.results
+            )
+        ) {
+
+            results.push(
+                ...data.results
+            );
+        }
+
+        nextUrl =
+            data.next ||
+            null;
+    }
 
     return results;
 }
@@ -232,13 +620,13 @@ async function loadCoursesPageData() {
 
         showLoadingState();
 
-
         const [
             coursesData,
             facultiesData,
             departmentsData,
             semestersData
         ] = await Promise.all([
+
             fetchAllPages(
                 COURSES_API_URL
             ),
@@ -256,50 +644,52 @@ async function loadCoursesPageData() {
             )
         ]);
 
-
         courses =
-            Array.isArray(coursesData)
+            Array.isArray(
+                coursesData
+            )
                 ? coursesData
                 : [];
 
         faculties =
-            Array.isArray(facultiesData)
+            Array.isArray(
+                facultiesData
+            )
                 ? facultiesData
                 : [];
 
         departments =
-            Array.isArray(departmentsData)
+            Array.isArray(
+                departmentsData
+            )
                 ? departmentsData
                 : [];
 
         semesters =
-            Array.isArray(semestersData)
+            Array.isArray(
+                semestersData
+            )
                 ? semestersData
                 : [];
-
 
         populateFacultySelects();
 
         populateSemesterSelects();
 
-        populateDepartmentFilter(
-            courseFacultyFilter.value
-        );
+        populateDepartmentFilter();
 
-        populateDepartmentForm(
-            courseFacultyInput.value
-        );
+        populateDepartmentForm();
 
         renderCourses();
 
+        updateCourseIdPreview();
 
     } catch (error) {
 
         console.error(
-            "Error loading course data:",
+            "Courses page loading error:",
             error
         );
-
 
         showErrorState(
             error.message ||
@@ -315,10 +705,16 @@ async function loadCoursesPageData() {
 
 function showLoadingState() {
 
-    coursesEmptyState.classList.add(
-        "hidden"
-    );
+    if (coursesEmptyState) {
 
+        coursesEmptyState.classList.add(
+            "hidden"
+        );
+    }
+
+    if (!coursesTableBody) {
+        return;
+    }
 
     coursesTableBody.innerHTML = `
         <tr>
@@ -338,12 +734,20 @@ function showLoadingState() {
    ERROR STATE
 ========================================================= */
 
-function showErrorState(message) {
+function showErrorState(
+    message
+) {
 
-    coursesEmptyState.classList.add(
-        "hidden"
-    );
+    if (coursesEmptyState) {
 
+        coursesEmptyState.classList.add(
+            "hidden"
+        );
+    }
+
+    if (!coursesTableBody) {
+        return;
+    }
 
     coursesTableBody.innerHTML = `
         <tr>
@@ -352,7 +756,9 @@ function showErrorState(message) {
                 class="course-error"
             >
                 <i class="fa-solid fa-circle-exclamation"></i>
-                ${escapeHtml(message)}
+                ${escapeHtml(
+                    message
+                )}
             </td>
         </tr>
     `;
@@ -360,136 +766,141 @@ function showErrorState(message) {
 
 
 /* =========================================================
-   POPULATE FACULTY SELECTS
+   FACULTY SELECTS
 ========================================================= */
 
 function populateFacultySelects() {
 
-    courseFacultyInput.innerHTML = `
-        <option value="">
-            Select Faculty
-        </option>
-    `;
+    if (courseFacultyInput) {
 
+        courseFacultyInput.innerHTML = `
+            <option value="">
+                Select Faculty
+            </option>
+        `;
+    }
 
-    courseFacultyFilter.innerHTML = `
-        <option value="">
-            All Faculties
-        </option>
-    `;
+    if (courseFacultyFilter) {
 
+        courseFacultyFilter.innerHTML = `
+            <option value="">
+                All Faculties
+            </option>
+        `;
+    }
 
     faculties.forEach(
         faculty => {
 
-            const option =
-                document.createElement(
-                    "option"
+            if (courseFacultyInput) {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+                option.value =
+                    faculty.id;
+
+                option.textContent =
+                    `${faculty.code} - ${faculty.name}`;
+
+                courseFacultyInput.appendChild(
+                    option
                 );
+            }
 
+            if (courseFacultyFilter) {
 
-            option.value =
-                faculty.id;
+                const option =
+                    document.createElement(
+                        "option"
+                    );
 
+                option.value =
+                    faculty.id;
 
-            option.textContent =
-                `${faculty.code} - ${faculty.name}`;
+                option.textContent =
+                    `${faculty.code} - ${faculty.name}`;
 
-
-            courseFacultyInput.appendChild(
-                option
-            );
-
-
-            const filterOption =
-                document.createElement(
-                    "option"
+                courseFacultyFilter.appendChild(
+                    option
                 );
-
-
-            filterOption.value =
-                faculty.id;
-
-
-            filterOption.textContent =
-                `${faculty.code} - ${faculty.name}`;
-
-
-            courseFacultyFilter.appendChild(
-                filterOption
-            );
+            }
         }
     );
 }
 
 
 /* =========================================================
-   POPULATE SEMESTER SELECTS
+   SEMESTER SELECTS
 ========================================================= */
 
 function populateSemesterSelects() {
 
-    courseSemesterInput.innerHTML = `
-        <option value="">
-            Select Semester
-        </option>
-    `;
+    if (courseSemesterInput) {
 
+        courseSemesterInput.innerHTML = `
+            <option value="">
+                Select Semester
+            </option>
+        `;
+    }
 
-    courseSemesterFilter.innerHTML = `
-        <option value="">
-            All Semesters
-        </option>
-    `;
+    if (courseSemesterFilter) {
 
+        courseSemesterFilter.innerHTML = `
+            <option value="">
+                All Semesters
+            </option>
+        `;
+    }
 
     semesters.forEach(
         semester => {
 
-            const option =
-                document.createElement(
-                    "option"
+            if (courseSemesterInput) {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+                option.value =
+                    semester.id;
+
+                option.textContent =
+                    semester.name;
+
+                courseSemesterInput.appendChild(
+                    option
                 );
+            }
 
+            if (courseSemesterFilter) {
 
-            option.value =
-                semester.id;
+                const option =
+                    document.createElement(
+                        "option"
+                    );
 
+                option.value =
+                    semester.id;
 
-            option.textContent =
-                semester.name;
+                option.textContent =
+                    semester.name;
 
-
-            courseSemesterInput.appendChild(
-                option
-            );
-
-
-            const filterOption =
-                document.createElement(
-                    "option"
+                courseSemesterFilter.appendChild(
+                    option
                 );
-
-
-            filterOption.value =
-                semester.id;
-
-
-            filterOption.textContent =
-                semester.name;
-
-
-            courseSemesterFilter.appendChild(
-                filterOption
-            );
+            }
         }
     );
 }
 
 
 /* =========================================================
-   POPULATE DEPARTMENT FORM
-   Only departments belonging to selected faculty
+   DEPARTMENT FORM
 ========================================================= */
 
 function populateDepartmentForm(
@@ -497,24 +908,30 @@ function populateDepartmentForm(
     selectedDepartmentId = ""
 ) {
 
+    if (!courseDepartmentInput) {
+        return;
+    }
+
     courseDepartmentInput.innerHTML = `
         <option value="">
             Select Department
         </option>
     `;
 
+    if (!facultyId) {
+        return;
+    }
 
     const filteredDepartments =
-        facultyId
-            ? departments.filter(
-                department =>
-                    Number(
-                        department.faculty
-                    ) ===
-                    Number(facultyId)
-            )
-            : [];
-
+        departments.filter(
+            department =>
+                Number(
+                    department.faculty
+                ) ===
+                Number(
+                    facultyId
+                )
+        );
 
     filteredDepartments.forEach(
         department => {
@@ -524,21 +941,17 @@ function populateDepartmentForm(
                     "option"
                 );
 
-
             option.value =
                 department.id;
 
-
             option.textContent =
                 `${department.code} - ${department.name}`;
-
 
             courseDepartmentInput.appendChild(
                 option
             );
         }
     );
-
 
     if (selectedDepartmentId) {
 
@@ -552,7 +965,6 @@ function populateDepartmentForm(
                         selectedDepartmentId
                     )
             );
-
 
         if (exists) {
 
@@ -564,7 +976,7 @@ function populateDepartmentForm(
 
 
 /* =========================================================
-   POPULATE DEPARTMENT FILTER
+   DEPARTMENT FILTER
 ========================================================= */
 
 function populateDepartmentFilter(
@@ -572,12 +984,15 @@ function populateDepartmentFilter(
     selectedDepartmentId = ""
 ) {
 
+    if (!courseDepartmentFilter) {
+        return;
+    }
+
     courseDepartmentFilter.innerHTML = `
         <option value="">
             All Departments
         </option>
     `;
-
 
     const filteredDepartments =
         facultyId
@@ -586,10 +1001,11 @@ function populateDepartmentFilter(
                     Number(
                         department.faculty
                     ) ===
-                    Number(facultyId)
+                    Number(
+                        facultyId
+                    )
             )
             : departments;
-
 
     filteredDepartments.forEach(
         department => {
@@ -599,21 +1015,17 @@ function populateDepartmentFilter(
                     "option"
                 );
 
-
             option.value =
                 department.id;
 
-
             option.textContent =
                 `${department.code} - ${department.name}`;
-
 
             courseDepartmentFilter.appendChild(
                 option
             );
         }
     );
-
 
     if (selectedDepartmentId) {
 
@@ -628,7 +1040,6 @@ function populateDepartmentFilter(
                     )
             );
 
-
         if (exists) {
 
             courseDepartmentFilter.value =
@@ -639,192 +1050,24 @@ function populateDepartmentFilter(
 
 
 /* =========================================================
-   GENERATE COURSE CODE PREVIEW
-   This is a PREVIEW only.
-   Final code is generated by Django backend.
+   COURSE ID
 ========================================================= */
 
-function getSemesterPrefix(
-    semesterName
+function getCourseDisplayId(
+    course
 ) {
 
-    if (!semesterName) {
-        return "";
-    }
-
-
-    const name =
-        semesterName
-            .trim()
-            .toUpperCase();
-
-
-    /*
-       Example:
-       Semester 1 -> SEM1
-       Semester 2 -> SEM2
-       Semester 10 -> SEM10
-    */
-
-    const numberMatch =
-        name.match(/\d+/);
-
-
-    if (numberMatch) {
-
-        return `SEM${numberMatch[0]}`;
-    }
-
-
-    /*
-       Fallback:
-       If semester has no number,
-       use the first 10 letters.
-    */
-
-    return name
-        .replace(/[^A-Z0-9]/g, "")
-        .substring(0, 10);
-}
-
-
-/* =========================================================
-   UPDATE COURSE CODE PREVIEW
-========================================================= */
-
-function updateCourseCodePreview() {
-
-    const semesterId =
-        courseSemesterInput.value;
-
-
-    if (!semesterId) {
-
-        courseCodeDisplay.textContent =
-            "Auto-generated";
-
-        generatedCourseCode.textContent =
-            "---";
-
-        courseCodePreview.hidden =
-            true;
-
-        return;
-    }
-
-
-    const semester =
-        semesters.find(
-            item =>
-                Number(item.id) ===
-                Number(semesterId)
-        );
-
-
-    if (!semester) {
-
-        courseCodeDisplay.textContent =
-            "Auto-generated";
-
-        generatedCourseCode.textContent =
-            "---";
-
-        courseCodePreview.hidden =
-            true;
-
-        return;
-    }
-
-
-    const prefix =
-        getSemesterPrefix(
-            semester.name
-        );
-
-
-    /*
-       For a NEW course we show the
-       next available number.
-
-       Backend remains the final authority.
-    */
-
-    const coursesInSemester =
-        courses.filter(
-            course =>
-                Number(
-                    course.semester
-                ) ===
-                Number(semesterId)
-        );
-
-
-    let nextNumber =
-        coursesInSemester.length + 1;
-
-
-    /*
-       Protect against gaps in IDs/codes.
-       Find existing numeric suffixes.
-    */
-
-    const usedNumbers = [];
-
-
-    coursesInSemester.forEach(
-        course => {
-
-            const code =
-                String(
-                    course.course_code ||
-                    ""
-                );
-
-
-            const match =
-                code.match(
-                    /-(\d+)$/
-                );
-
-
-            if (match) {
-
-                usedNumbers.push(
-                    Number(
-                        match[1]
-                    )
-                );
-            }
-        }
-    );
-
-
-    while (
-        usedNumbers.includes(
-            nextNumber
-        )
+    if (
+        course &&
+        course.course_id
     ) {
 
-        nextNumber++;
+        return String(
+            course.course_id
+        ).trim();
     }
 
-
-    const previewCode =
-        `${prefix}-${String(
-            nextNumber
-        ).padStart(3, "0")}`;
-
-
-    courseCodeDisplay.textContent =
-        previewCode;
-
-
-    generatedCourseCode.textContent =
-        previewCode;
-
-
-    courseCodePreview.hidden =
-        false;
+    return "-";
 }
 
 
@@ -834,48 +1077,67 @@ function updateCourseCodePreview() {
 
 function renderCourses() {
 
-    const searchValue =
-        courseSearch.value
-            .trim()
-            .toLowerCase();
+    if (!coursesTableBody) {
+        return;
+    }
 
+    const searchValue =
+        courseSearch
+            ? courseSearch.value
+                .trim()
+                .toLowerCase()
+            : "";
 
     const selectedFaculty =
-        courseFacultyFilter.value;
-
+        courseFacultyFilter
+            ? courseFacultyFilter.value
+            : "";
 
     const selectedDepartment =
-        courseDepartmentFilter.value;
-
+        courseDepartmentFilter
+            ? courseDepartmentFilter.value
+            : "";
 
     const selectedSemester =
-        courseSemesterFilter.value;
-
+        courseSemesterFilter
+            ? courseSemesterFilter.value
+            : "";
 
     const filteredCourses =
         courses.filter(
             course => {
 
+                const courseId =
+                    getCourseDisplayId(
+                        course
+                    );
+
                 const searchText = [
-                    course.course_code,
+
+                    courseId,
+
                     course.name,
+
                     course.faculty_name,
+
                     course.faculty_code,
+
                     course.department_name,
+
                     course.department_code,
+
                     course.semester_name
+
                 ]
                     .filter(Boolean)
                     .join(" ")
                     .toLowerCase();
-
 
                 const matchesSearch =
                     !searchValue ||
                     searchText.includes(
                         searchValue
                     );
-
 
                 const matchesFaculty =
                     !selectedFaculty ||
@@ -886,7 +1148,6 @@ function renderCourses() {
                         selectedFaculty
                     );
 
-
                 const matchesDepartment =
                     !selectedDepartment ||
                     Number(
@@ -895,7 +1156,6 @@ function renderCourses() {
                     Number(
                         selectedDepartment
                     );
-
 
                 const matchesSemester =
                     !selectedSemester ||
@@ -906,7 +1166,6 @@ function renderCourses() {
                         selectedSemester
                     );
 
-
                 return (
                     matchesSearch &&
                     matchesFaculty &&
@@ -916,26 +1175,28 @@ function renderCourses() {
             }
         );
 
-
     coursesTableBody.innerHTML = "";
-
 
     if (
         filteredCourses.length === 0
     ) {
 
-        coursesEmptyState.classList.remove(
-            "hidden"
-        );
+        if (coursesEmptyState) {
+
+            coursesEmptyState.classList.remove(
+                "hidden"
+            );
+        }
 
         return;
     }
 
+    if (coursesEmptyState) {
 
-    coursesEmptyState.classList.add(
-        "hidden"
-    );
-
+        coursesEmptyState.classList.add(
+            "hidden"
+        );
+    }
 
     filteredCourses.forEach(
         course => {
@@ -945,14 +1206,17 @@ function renderCourses() {
                     "tr"
                 );
 
+            const courseId =
+                getCourseDisplayId(
+                    course
+                );
 
             row.innerHTML = `
 
                 <td>
                     <span class="course-code">
                         ${escapeHtml(
-                            course.course_code ||
-                            "-"
+                            courseId
                         )}
                     </span>
                 </td>
@@ -998,21 +1262,22 @@ function renderCourses() {
                 <td>
                     <span class="course-credit-hours">
                         ${escapeHtml(
-                            course.credit_hours ||
+                            course.credit_hours ??
                             "-"
                         )}
                     </span>
                 </td>
 
                 <td>
-
                     <div class="course-actions">
 
                         <button
                             type="button"
                             class="course-action-btn edit"
                             data-action="edit"
-                            data-id="${course.id}"
+                            data-id="${escapeHtml(
+                                course.id
+                            )}"
                         >
                             Edit
                         </button>
@@ -1021,16 +1286,16 @@ function renderCourses() {
                             type="button"
                             class="course-action-btn delete"
                             data-action="delete"
-                            data-id="${course.id}"
+                            data-id="${escapeHtml(
+                                course.id
+                            )}"
                         >
                             Delete
                         </button>
 
                     </div>
-
                 </td>
             `;
-
 
             coursesTableBody.appendChild(
                 row
@@ -1048,50 +1313,94 @@ function openAddCourseModal() {
 
     currentCourseId = null;
 
+    if (courseForm) {
 
-    courseForm.reset();
+        courseForm.reset();
+    }
 
+    if (courseIdInput) {
 
-    courseIdInput.value = "";
+        courseIdInput.value =
+            "";
+    }
 
+    if (courseModalTitle) {
 
-    courseModalTitle.textContent =
-        "Add Course";
+        courseModalTitle.textContent =
+            "Add Course";
+    }
 
+    if (courseIsActiveInput) {
 
-    courseIsActiveInput.checked =
-        true;
+        courseIsActiveInput.checked =
+            true;
+    }
 
+    if (courseIdDisplay) {
 
-    courseCodeDisplay.textContent =
-        "Auto-generated";
-
-
-    generatedCourseCode.textContent =
-        "---";
-
-
-    courseCodePreview.hidden =
-        true;
-
+        courseIdDisplay.value =
+            "Auto-generated";
+    }
 
     populateDepartmentForm();
 
+    if (saveCourseBtn) {
 
-    saveCourseBtn.innerHTML = `
-        <i class="fa-solid fa-floppy-disk"></i>
-        Save Course
-    `;
+        saveCourseBtn.disabled =
+            false;
 
+        saveCourseBtn.innerHTML = `
+            <i class="fa-solid fa-floppy-disk"></i>
+            Save Course
+        `;
+    }
 
-    courseModal.hidden =
-        false;
+    /*
+       IMPORTANT FIX
 
+       Tailwind's "hidden" class uses:
+       display: none;
+
+       Therefore changing only:
+       courseModal.hidden = false
+
+       is NOT enough.
+
+       We remove the hidden class AND set
+       display:flex.
+    */
+
+    if (courseModal) {
+
+        courseModal.classList.remove(
+            "hidden"
+        );
+
+        courseModal.hidden =
+            false;
+
+        courseModal.setAttribute(
+            "aria-hidden",
+            "false"
+        );
+
+        courseModal.style.display =
+            "flex";
+
+        document.body.classList.add(
+            "overflow-hidden"
+        );
+    }
+
+    updateCourseIdPreview();
 
     setTimeout(
         () => {
 
-            courseNameInput.focus();
+            if (courseNameInput) {
+
+                courseNameInput.focus();
+            }
 
         },
         50
@@ -1103,94 +1412,134 @@ function openAddCourseModal() {
    OPEN EDIT COURSE MODAL
 ========================================================= */
 
-function openEditCourseModal(id) {
+function openEditCourseModal(
+    id
+) {
 
     const course =
         courses.find(
             item =>
-                Number(item.id) ===
-                Number(id)
+                Number(
+                    item.id
+                ) ===
+                Number(
+                    id
+                )
         );
 
-
     if (!course) {
+
+        alert(
+            "Course not found."
+        );
+
         return;
     }
-
 
     currentCourseId =
         course.id;
 
+    if (courseIdInput) {
 
-    courseIdInput.value =
-        course.id;
+        courseIdInput.value =
+            course.id;
+    }
 
+    if (courseIdDisplay) {
 
-    courseNameInput.value =
-        course.name || "";
+        courseIdDisplay.value =
+            getCourseDisplayId(
+                course
+            );
+    }
 
+    if (courseNameInput) {
 
-    courseFacultyInput.value =
-        course.faculty || "";
+        courseNameInput.value =
+            course.name ||
+            "";
+    }
 
+    if (courseFacultyInput) {
+
+        courseFacultyInput.value =
+            course.faculty ||
+            "";
+    }
 
     populateDepartmentForm(
         course.faculty,
         course.department
     );
 
+    if (courseSemesterInput) {
 
-    courseSemesterInput.value =
-        course.semester || "";
+        courseSemesterInput.value =
+            course.semester ||
+            "";
+    }
 
+    if (courseCreditHoursInput) {
 
-    courseCreditHoursInput.value =
-        course.credit_hours || "";
+        courseCreditHoursInput.value =
+            course.credit_hours ??
+            "";
+    }
 
+    if (courseIsActiveInput) {
 
-    courseIsActiveInput.checked =
-        Boolean(
-            course.is_active
+        courseIsActiveInput.checked =
+            Boolean(
+                course.is_active
+            );
+    }
+
+    if (courseModalTitle) {
+
+        courseModalTitle.textContent =
+            "Edit Course";
+    }
+
+    if (saveCourseBtn) {
+
+        saveCourseBtn.disabled =
+            false;
+
+        saveCourseBtn.innerHTML = `
+            <i class="fa-solid fa-floppy-disk"></i>
+            Update Course
+        `;
+    }
+
+    if (courseModal) {
+
+        courseModal.classList.remove(
+            "hidden"
         );
 
+        courseModal.hidden =
+            false;
 
-    /*
-       Show the existing backend-generated
-       course code while editing.
-    */
+        courseModal.setAttribute(
+            "aria-hidden",
+            "false"
+        );
 
-    courseCodeDisplay.textContent =
-        course.course_code ||
-        "Auto-generated";
+        courseModal.style.display =
+            "flex";
 
-
-    generatedCourseCode.textContent =
-        course.course_code ||
-        "---";
-
-
-    courseCodePreview.hidden =
-        !course.course_code;
-
-
-    courseModalTitle.textContent =
-        "Edit Course";
-
-
-    saveCourseBtn.innerHTML = `
-        <i class="fa-solid fa-floppy-disk"></i>
-        Update Course
-    `;
-
-
-    courseModal.hidden =
-        false;
-
+        document.body.classList.add(
+            "overflow-hidden"
+        );
+    }
 
     setTimeout(
         () => {
 
-            courseNameInput.focus();
+            if (courseNameInput) {
+
+                courseNameInput.focus();
+            }
 
         },
         50
@@ -1204,28 +1553,44 @@ function openEditCourseModal(id) {
 
 function closeCourseFormModal() {
 
-    courseModal.hidden =
-        true;
+    if (courseModal) {
 
+        courseModal.classList.add(
+            "hidden"
+        );
 
-    courseForm.reset();
+        courseModal.hidden =
+            true;
 
+        courseModal.setAttribute(
+            "aria-hidden",
+            "true"
+        );
 
-    courseIdInput.value =
-        "";
+        courseModal.style.display =
+            "none";
+    }
 
+    document.body.classList.remove(
+        "overflow-hidden"
+    );
 
-    courseCodeDisplay.textContent =
-        "Auto-generated";
+    if (courseForm) {
 
+        courseForm.reset();
+    }
 
-    generatedCourseCode.textContent =
-        "---";
+    if (courseIdInput) {
 
+        courseIdInput.value =
+            "";
+    }
 
-    courseCodePreview.hidden =
-        true;
+    if (courseIdDisplay) {
 
+        courseIdDisplay.value =
+            "Auto-generated";
+    }
 
     currentCourseId =
         null;
@@ -1236,31 +1601,62 @@ function closeCourseFormModal() {
    OPEN DELETE MODAL
 ========================================================= */
 
-function openDeleteCourseModal(id) {
+function openDeleteCourseModal(
+    id
+) {
 
     const course =
         courses.find(
             item =>
-                Number(item.id) ===
-                Number(id)
+                Number(
+                    item.id
+                ) ===
+                Number(
+                    id
+                )
         );
 
-
     if (!course) {
+
+        alert(
+            "Course not found."
+        );
+
         return;
     }
-
 
     currentCourseId =
         course.id;
 
+    if (deleteCourseName) {
 
-    deleteCourseName.textContent =
-        `${course.course_code || ""} - ${course.name || ""}`;
+        deleteCourseName.textContent =
+            `${getCourseDisplayId(
+                course
+            )} - ${course.name || ""}`;
+    }
 
+    if (deleteCourseModal) {
 
-    deleteCourseModal.hidden =
-        false;
+        deleteCourseModal.classList.remove(
+            "hidden"
+        );
+
+        deleteCourseModal.hidden =
+            false;
+
+        deleteCourseModal.setAttribute(
+            "aria-hidden",
+            "false"
+        );
+
+        deleteCourseModal.style.display =
+            "flex";
+
+        document.body.classList.add(
+            "overflow-hidden"
+        );
+    }
 }
 
 
@@ -1270,9 +1666,27 @@ function openDeleteCourseModal(id) {
 
 function closeDeleteCourseModal() {
 
-    deleteCourseModal.hidden =
-        true;
+    if (deleteCourseModal) {
 
+        deleteCourseModal.classList.add(
+            "hidden"
+        );
+
+        deleteCourseModal.hidden =
+            true;
+
+        deleteCourseModal.setAttribute(
+            "aria-hidden",
+            "true"
+        );
+
+        deleteCourseModal.style.display =
+            "none";
+    }
+
+    document.body.classList.remove(
+        "overflow-hidden"
+    );
 
     currentCourseId =
         null;
@@ -1280,43 +1694,39 @@ function closeDeleteCourseModal() {
 
 
 /* =========================================================
-   SAVE COURSE
+   VALIDATE FORM
 ========================================================= */
 
-async function saveCourse(event) {
-
-    event.preventDefault();
-
+function validateCourseForm() {
 
     const courseName =
-        courseNameInput.value.trim();
-
+        courseNameInput
+            ? normalizeText(
+                courseNameInput.value
+            )
+            : "";
 
     const faculty =
-        courseFacultyInput.value;
-
+        courseFacultyInput
+            ? courseFacultyInput.value
+            : "";
 
     const department =
-        courseDepartmentInput.value;
-
+        courseDepartmentInput
+            ? courseDepartmentInput.value
+            : "";
 
     const semester =
-        courseSemesterInput.value;
-
+        courseSemesterInput
+            ? courseSemesterInput.value
+            : "";
 
     const creditHours =
-        Number(
-            courseCreditHoursInput.value
-        );
-
-
-    const isActive =
-        courseIsActiveInput.checked;
-
-
-    /* -----------------------------------------------------
-       BASIC VALIDATION
-    ----------------------------------------------------- */
+        courseCreditHoursInput
+            ? Number(
+                courseCreditHoursInput.value
+            )
+            : 0;
 
     if (!courseName) {
 
@@ -1324,11 +1734,13 @@ async function saveCourse(event) {
             "Please enter the course name."
         );
 
-        courseNameInput.focus();
+        if (courseNameInput) {
 
-        return;
+            courseNameInput.focus();
+        }
+
+        return null;
     }
-
 
     if (!faculty) {
 
@@ -1336,11 +1748,13 @@ async function saveCourse(event) {
             "Please select a faculty."
         );
 
-        courseFacultyInput.focus();
+        if (courseFacultyInput) {
 
-        return;
+            courseFacultyInput.focus();
+        }
+
+        return null;
     }
-
 
     if (!department) {
 
@@ -1348,11 +1762,13 @@ async function saveCourse(event) {
             "Please select a department."
         );
 
-        courseDepartmentInput.focus();
+        if (courseDepartmentInput) {
 
-        return;
+            courseDepartmentInput.focus();
+        }
+
+        return null;
     }
-
 
     if (!semester) {
 
@@ -1360,11 +1776,13 @@ async function saveCourse(event) {
             "Please select a semester."
         );
 
-        courseSemesterInput.focus();
+        if (courseSemesterInput) {
 
-        return;
+            courseSemesterInput.focus();
+        }
+
+        return null;
     }
-
 
     if (
         !Number.isInteger(
@@ -1377,113 +1795,161 @@ async function saveCourse(event) {
             "Credit Hours must be a positive whole number."
         );
 
-        courseCreditHoursInput.focus();
+        if (courseCreditHoursInput) {
 
-        return;
+            courseCreditHoursInput.focus();
+        }
+
+        return null;
     }
-
-
-    /* -----------------------------------------------------
-       VALIDATE DEPARTMENT / FACULTY RELATION
-    ----------------------------------------------------- */
 
     const selectedDepartment =
         departments.find(
             item =>
-                Number(item.id) ===
-                Number(department)
+                Number(
+                    item.id
+                ) ===
+                Number(
+                    department
+                )
         );
-
 
     if (
         selectedDepartment &&
         Number(
             selectedDepartment.faculty
         ) !==
-        Number(faculty)
+        Number(
+            faculty
+        )
     ) {
 
         alert(
             "The selected department does not belong to the selected faculty."
         );
 
+        return null;
+    }
+
+    return {
+        courseName,
+        faculty,
+        department,
+        semester,
+        creditHours
+    };
+}
+
+
+/* =========================================================
+   SAVE COURSE
+========================================================= */
+
+async function saveCourse(
+    event
+) {
+
+    event.preventDefault();
+
+    const formData =
+        validateCourseForm();
+
+    if (!formData) {
         return;
     }
 
+    const {
+        courseName,
+        faculty,
+        department,
+        semester,
+        creditHours
+    } = formData;
 
-    /* -----------------------------------------------------
-       URL / METHOD
-    ----------------------------------------------------- */
+    const isActive =
+        courseIsActiveInput
+            ? courseIsActiveInput.checked
+            : true;
 
     const isEditing =
-        Boolean(
-            currentCourseId
-        );
-
+        currentCourseId !== null;
 
     const url =
         isEditing
             ? `${COURSES_API_URL}${currentCourseId}/`
             : COURSES_API_URL;
 
-
     const method =
         isEditing
             ? "PATCH"
             : "POST";
 
+    /*
+       IMPORTANT:
+
+       Do NOT send course_id here.
+
+       Django's Course.save() generates:
+
+       ITP-001
+       DMS-001
+       WD-001
+       SE-001
+
+       The frontend only previews the ID.
+    */
+
+    const payload = {
+
+        name:
+            courseName,
+
+        faculty:
+            Number(
+                faculty
+            ),
+
+        department:
+            Number(
+                department
+            ),
+
+        semester:
+            Number(
+                semester
+            ),
+
+        credit_hours:
+            creditHours,
+
+        is_active:
+            isActive
+    };
 
     const originalButtonText =
-        saveCourseBtn.innerHTML;
+        saveCourseBtn
+            ? saveCourseBtn.innerHTML
+            : "";
 
+    if (saveCourseBtn) {
 
-    saveCourseBtn.disabled =
-        true;
+        saveCourseBtn.disabled =
+            true;
 
-
-    saveCourseBtn.innerHTML = `
-        <i class="fa-solid fa-spinner fa-spin"></i>
-        Saving...
-    `;
-
+        saveCourseBtn.innerHTML = `
+            <i class="fa-solid fa-spinner fa-spin"></i>
+            Saving...
+        `;
+    }
 
     try {
-
-        /*
-           IMPORTANT:
-           course_code is NOT sent.
-
-           Django generates it automatically
-           from the selected semester.
-        */
-
-        const payload = {
-
-            name:
-                courseName,
-
-            faculty:
-                Number(faculty),
-
-            department:
-                Number(department),
-
-            semester:
-                Number(semester),
-
-            credit_hours:
-                creditHours,
-
-            is_active:
-                isActive
-        };
-
 
         const response =
             await fetch(
                 url,
                 {
-                    method,
+                    method:
+                        method,
 
                     credentials:
                         "same-origin",
@@ -1497,7 +1963,7 @@ async function saveCourse(event) {
                             "application/json",
 
                         "X-CSRFToken":
-                            csrfToken || ""
+                            getCsrfToken()
                     },
 
                     body:
@@ -1507,14 +1973,12 @@ async function saveCourse(event) {
                 }
             );
 
-
         const data =
             await response
                 .json()
                 .catch(
                     () => ({})
                 );
-
 
         if (!response.ok) {
 
@@ -1525,12 +1989,9 @@ async function saveCourse(event) {
             );
         }
 
-
         closeCourseFormModal();
 
-
         await loadCoursesPageData();
-
 
     } catch (error) {
 
@@ -1539,21 +2000,21 @@ async function saveCourse(event) {
             error
         );
 
-
         alert(
             error.message ||
             "Failed to save course."
         );
 
-
     } finally {
 
-        saveCourseBtn.disabled =
-            false;
+        if (saveCourseBtn) {
 
+            saveCourseBtn.disabled =
+                false;
 
-        saveCourseBtn.innerHTML =
-            originalButtonText;
+            saveCourseBtn.innerHTML =
+                originalButtonText;
+        }
     }
 }
 
@@ -1564,28 +2025,31 @@ async function saveCourse(event) {
 
 async function deleteCourse() {
 
-    if (!currentCourseId) {
+    if (
+        currentCourseId === null
+    ) {
+
         return;
     }
-
 
     const id =
         currentCourseId;
 
-
     const originalButtonText =
-        confirmDeleteCourse.innerHTML;
+        confirmDeleteCourse
+            ? confirmDeleteCourse.innerHTML
+            : "";
 
+    if (confirmDeleteCourse) {
 
-    confirmDeleteCourse.disabled =
-        true;
+        confirmDeleteCourse.disabled =
+            true;
 
-
-    confirmDeleteCourse.innerHTML = `
-        <i class="fa-solid fa-spinner fa-spin"></i>
-        Deleting...
-    `;
-
+        confirmDeleteCourse.innerHTML = `
+            <i class="fa-solid fa-spinner fa-spin"></i>
+            Deleting...
+        `;
+    }
 
     try {
 
@@ -1593,7 +2057,8 @@ async function deleteCourse() {
             await fetch(
                 `${COURSES_API_URL}${id}/`,
                 {
-                    method: "DELETE",
+                    method:
+                        "DELETE",
 
                     credentials:
                         "same-origin",
@@ -1604,11 +2069,10 @@ async function deleteCourse() {
                             "application/json",
 
                         "X-CSRFToken":
-                            csrfToken || ""
+                            getCsrfToken()
                     }
                 }
             );
-
 
         if (!response.ok) {
 
@@ -1619,7 +2083,6 @@ async function deleteCourse() {
                         () => ({})
                     );
 
-
             throw new Error(
                 getApiErrorMessage(
                     data
@@ -1627,12 +2090,9 @@ async function deleteCourse() {
             );
         }
 
-
         closeDeleteCourseModal();
 
-
         await loadCoursesPageData();
-
 
     } catch (error) {
 
@@ -1641,21 +2101,21 @@ async function deleteCourse() {
             error
         );
 
-
         alert(
             error.message ||
             "Failed to delete course."
         );
 
-
     } finally {
 
-        confirmDeleteCourse.disabled =
-            false;
+        if (confirmDeleteCourse) {
 
+            confirmDeleteCourse.disabled =
+                false;
 
-        confirmDeleteCourse.innerHTML =
-            originalButtonText;
+            confirmDeleteCourse.innerHTML =
+                originalButtonText;
+        }
     }
 }
 
@@ -1664,12 +2124,16 @@ async function deleteCourse() {
    API ERROR MESSAGE
 ========================================================= */
 
-function getApiErrorMessage(data) {
+function getApiErrorMessage(
+    data
+) {
 
     if (!data) {
-        return "An unexpected error occurred.";
-    }
 
+        return (
+            "An unexpected error occurred."
+        );
+    }
 
     if (
         typeof data.detail ===
@@ -1679,7 +2143,6 @@ function getApiErrorMessage(data) {
         return data.detail;
     }
 
-
     if (
         typeof data ===
         "string"
@@ -1688,7 +2151,6 @@ function getApiErrorMessage(data) {
         return data;
     }
 
-
     if (
         typeof data ===
         "object"
@@ -1696,8 +2158,9 @@ function getApiErrorMessage(data) {
 
         const messages = [];
 
-
-        Object.entries(data).forEach(
+        Object.entries(
+            data
+        ).forEach(
             ([field, value]) => {
 
                 if (
@@ -1710,6 +2173,18 @@ function getApiErrorMessage(data) {
                         `${field}: ${value.join(", ")}`
                     );
 
+                } else if (
+                    typeof value ===
+                        "object" &&
+                    value !== null
+                ) {
+
+                    messages.push(
+                        `${field}: ${JSON.stringify(
+                            value
+                        )}`
+                    );
+
                 } else {
 
                     messages.push(
@@ -1718,7 +2193,6 @@ function getApiErrorMessage(data) {
                 }
             }
         );
-
 
         if (
             messages.length > 0
@@ -1730,254 +2204,389 @@ function getApiErrorMessage(data) {
         }
     }
 
-
-    return "An unexpected error occurred.";
+    return (
+        "An unexpected error occurred."
+    );
 }
 
 
 /* =========================================================
-   TABLE ACTIONS
+   TABLE ACTION HANDLER
 ========================================================= */
 
-coursesTableBody.addEventListener(
-    "click",
-    event => {
+function handleCourseTableAction(
+    event
+) {
 
-        const button =
-            event.target.closest(
-                "[data-action]"
-            );
-
-
-        if (!button) {
-            return;
-        }
-
-
-        const action =
-            button.dataset.action;
-
-
-        const id =
-            button.dataset.id;
-
-
-        if (
-            action === "edit"
-        ) {
-
-            openEditCourseModal(id);
-
-        } else if (
-            action === "delete"
-        ) {
-
-            openDeleteCourseModal(id);
-        }
-    }
-);
-
-
-/* =========================================================
-   ADD COURSE BUTTON
-========================================================= */
-
-addCourseBtn.addEventListener(
-    "click",
-    openAddCourseModal
-);
-
-
-/* =========================================================
-   FORM SUBMIT
-========================================================= */
-
-courseForm.addEventListener(
-    "submit",
-    saveCourse
-);
-
-
-/* =========================================================
-   FACULTY CHANGE IN FORM
-========================================================= */
-
-courseFacultyInput.addEventListener(
-    "change",
-    () => {
-
-        populateDepartmentForm(
-            courseFacultyInput.value
+    const button =
+        event.target.closest(
+            "[data-action]"
         );
 
-
-        updateCourseCodePreview();
+    if (!button) {
+        return;
     }
-);
 
+    const action =
+        button.dataset.action;
 
-/* =========================================================
-   SEMESTER CHANGE IN FORM
-========================================================= */
+    const id =
+        button.dataset.id;
 
-courseSemesterInput.addEventListener(
-    "change",
-    () => {
-
-        updateCourseCodePreview();
+    if (!id) {
+        return;
     }
-);
 
+    if (
+        action ===
+        "edit"
+    ) {
 
-/* =========================================================
-   FACULTY FILTER CHANGE
-========================================================= */
-
-courseFacultyFilter.addEventListener(
-    "change",
-    () => {
-
-        populateDepartmentFilter(
-            courseFacultyFilter.value
+        openEditCourseModal(
+            id
         );
 
-
-        renderCourses();
+        return;
     }
-);
+
+    if (
+        action ===
+        "delete"
+    ) {
+
+        openDeleteCourseModal(
+            id
+        );
+    }
+}
 
 
 /* =========================================================
-   DEPARTMENT FILTER CHANGE
+   EVENT LISTENERS
 ========================================================= */
 
-courseDepartmentFilter.addEventListener(
-    "change",
-    renderCourses
-);
+function initializeCoursePage() {
+
+    initializeDomReferences();
 
 
-/* =========================================================
-   SEMESTER FILTER CHANGE
-========================================================= */
+    /* =====================================================
+       ADD COURSE BUTTON
 
-courseSemesterFilter.addEventListener(
-    "change",
-    renderCourses
-);
+       Event delegation is used intentionally.
 
+       This means Add Course still works even if the
+       button is rendered/replaced after JavaScript loads.
+    ===================================================== */
 
-/* =========================================================
-   SEARCH
-========================================================= */
-
-courseSearch.addEventListener(
-    "input",
-    renderCourses
-);
-
-
-/* =========================================================
-   CLOSE COURSE MODAL
-========================================================= */
-
-closeCourseModal.addEventListener(
-    "click",
-    closeCourseFormModal
-);
-
-
-cancelCourseBtn.addEventListener(
-    "click",
-    closeCourseFormModal
-);
-
-
-/* =========================================================
-   COURSE MODAL BACKDROP
-========================================================= */
-
-courseModal
-    .querySelector(
-        ".course-modal-overlay"
-    )
-    .addEventListener(
+    document.addEventListener(
         "click",
-        closeCourseFormModal
+        event => {
+
+            const button =
+                event.target.closest(
+                    "#addCourseBtn"
+                );
+
+            if (!button) {
+                return;
+            }
+
+            event.preventDefault();
+
+            openAddCourseModal();
+        }
     );
 
 
-/* =========================================================
-   DELETE MODAL
-========================================================= */
+    /* =====================================================
+       COURSE TABLE ACTIONS
+    ===================================================== */
 
-cancelDeleteCourse.addEventListener(
-    "click",
-    closeDeleteCourseModal
-);
+    if (coursesTableBody) {
 
-
-confirmDeleteCourse.addEventListener(
-    "click",
-    deleteCourse
-);
+        coursesTableBody.addEventListener(
+            "click",
+            handleCourseTableAction
+        );
+    }
 
 
-/* =========================================================
-   DELETE MODAL BACKDROP
-========================================================= */
+    /* =====================================================
+       FORM SUBMIT
+    ===================================================== */
 
-deleteCourseModal
-    .querySelector(
-        ".course-modal-overlay"
-    )
-    .addEventListener(
-        "click",
-        closeDeleteCourseModal
+    if (courseForm) {
+
+        courseForm.addEventListener(
+            "submit",
+            saveCourse
+        );
+    }
+
+
+    /* =====================================================
+       COURSE NAME
+    ===================================================== */
+
+    if (courseNameInput) {
+
+        courseNameInput.addEventListener(
+            "input",
+            updateCourseIdPreview
+        );
+    }
+
+
+    /* =====================================================
+       FACULTY FORM CHANGE
+    ===================================================== */
+
+    if (courseFacultyInput) {
+
+        courseFacultyInput.addEventListener(
+            "change",
+            () => {
+
+                populateDepartmentForm(
+                    courseFacultyInput.value
+                );
+
+            }
+        );
+    }
+
+
+    /* =====================================================
+       FACULTY FILTER CHANGE
+    ===================================================== */
+
+    if (courseFacultyFilter) {
+
+        courseFacultyFilter.addEventListener(
+            "change",
+            () => {
+
+                populateDepartmentFilter(
+                    courseFacultyFilter.value
+                );
+
+                renderCourses();
+            }
+        );
+    }
+
+
+    /* =====================================================
+       DEPARTMENT FILTER
+    ===================================================== */
+
+    if (courseDepartmentFilter) {
+
+        courseDepartmentFilter.addEventListener(
+            "change",
+            renderCourses
+        );
+    }
+
+
+    /* =====================================================
+       SEMESTER FILTER
+    ===================================================== */
+
+    if (courseSemesterFilter) {
+
+        courseSemesterFilter.addEventListener(
+            "change",
+            renderCourses
+        );
+    }
+
+
+    /* =====================================================
+       SEARCH
+    ===================================================== */
+
+    if (courseSearch) {
+
+        courseSearch.addEventListener(
+            "input",
+            renderCourses
+        );
+    }
+
+
+    /* =====================================================
+       CLOSE COURSE MODAL
+    ===================================================== */
+
+    if (closeCourseModal) {
+
+        closeCourseModal.addEventListener(
+            "click",
+            closeCourseFormModal
+        );
+    }
+
+
+    /* =====================================================
+       CANCEL COURSE
+    ===================================================== */
+
+    if (cancelCourseBtn) {
+
+        cancelCourseBtn.addEventListener(
+            "click",
+            closeCourseFormModal
+        );
+    }
+
+
+    /* =====================================================
+       COURSE MODAL BACKDROP
+    ===================================================== */
+
+    if (courseModal) {
+
+        courseModal.addEventListener(
+            "click",
+            event => {
+
+                /*
+                   Close only when clicking directly
+                   on the modal background.
+
+                   Do not close when clicking inside
+                   the actual form.
+                */
+
+                if (
+                    event.target ===
+                    courseModal
+                ) {
+
+                    closeCourseFormModal();
+                }
+            }
+        );
+    }
+
+
+    /* =====================================================
+       CANCEL DELETE
+    ===================================================== */
+
+    if (cancelDeleteCourse) {
+
+        cancelDeleteCourse.addEventListener(
+            "click",
+            closeDeleteCourseModal
+        );
+    }
+
+
+    /* =====================================================
+       CONFIRM DELETE
+    ===================================================== */
+
+    if (confirmDeleteCourse) {
+
+        confirmDeleteCourse.addEventListener(
+            "click",
+            deleteCourse
+        );
+    }
+
+
+    /* =====================================================
+       DELETE MODAL BACKDROP
+    ===================================================== */
+
+    if (deleteCourseModal) {
+
+        deleteCourseModal.addEventListener(
+            "click",
+            event => {
+
+                if (
+                    event.target ===
+                    deleteCourseModal
+                ) {
+
+                    closeDeleteCourseModal();
+                }
+            }
+        );
+    }
+
+
+    /* =====================================================
+       ESCAPE KEY
+    ===================================================== */
+
+    document.addEventListener(
+        "keydown",
+        event => {
+
+            if (
+                event.key !==
+                "Escape"
+            ) {
+
+                return;
+            }
+
+            if (
+                courseModal &&
+                !courseModal.classList.contains(
+                    "hidden"
+                )
+            ) {
+
+                closeCourseFormModal();
+
+                return;
+            }
+
+            if (
+                deleteCourseModal &&
+                !deleteCourseModal.classList.contains(
+                    "hidden"
+                )
+            ) {
+
+                closeDeleteCourseModal();
+            }
+        }
     );
 
 
-/* =========================================================
-   ESC KEY
-========================================================= */
+    /* =====================================================
+       LOAD DATA
+    ===================================================== */
 
-document.addEventListener(
-    "keydown",
-    event => {
-
-        if (
-            event.key !==
-            "Escape"
-        ) {
-            return;
-        }
-
-
-        if (
-            !courseModal.hidden
-        ) {
-
-            closeCourseFormModal();
-
-        } else if (
-            !deleteCourseModal.hidden
-        ) {
-
-            closeDeleteCourseModal();
-        }
-    }
-);
+    loadCoursesPageData();
+}
 
 
 /* =========================================================
-   INITIAL LOAD
+   START
 ========================================================= */
 
-document.addEventListener(
-    "DOMContentLoaded",
-    () => {
+if (
+    document.readyState ===
+    "loading"
+) {
 
-        loadCoursesPageData();
+    document.addEventListener(
+        "DOMContentLoaded",
+        initializeCoursePage,
+        {
+            once: true
+        }
+    );
 
-    }
-);
+} else {
+
+    initializeCoursePage();
+}

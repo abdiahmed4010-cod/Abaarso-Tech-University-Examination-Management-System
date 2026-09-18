@@ -1,908 +1,1114 @@
-document.addEventListener("DOMContentLoaded", () => {
+{% extends "base.html" %}
+{% load static %}
 
-    const API_URL = "http://127.0.0.1:8000/api/academic-years/";
+{% block content %}
 
-    // =========================================================
-    // ELEMENTS
-    // =========================================================
+<!-- =====================================================
+     ACADEMIC YEARS PAGE
+====================================================== -->
 
-    const tableBody = document.getElementById("academicYearsTableBody");
-    const emptyState = document.getElementById("academicYearsEmptyState");
-    const searchInput = document.getElementById("academicYearSearch");
+<style>
+    /* =====================================================
+       LIGHT MODE
+    ====================================================== */
 
-    // Add / Edit Modal
-    const modal = document.getElementById("academicYearModal");
-    const form = document.getElementById("academicYearForm");
-    const addButton = document.getElementById("addAcademicYearBtn");
+    .academic-years-page {
+        color: #1f2937;
+    }
 
-    // Delete Modal
-    const deleteModal = document.getElementById("deleteAcademicYearModal");
-    const deleteYearName = document.getElementById("deleteAcademicYearName");
-    const cancelDeleteButton = document.getElementById("cancelDeleteAcademicYear");
-    const confirmDeleteButton = document.getElementById("confirmDeleteAcademicYear");
+    .academic-years-search-card,
+    .academic-years-table-card {
+        background-color: #ffffff;
+        border: 1px solid #e5e7eb;
+    }
 
-    let academicYears = [];
-    let selectedDeleteId = null;
+    .academic-years-search-input {
+        background-color: #ffffff;
+        color: #1f2937;
+        border: 1px solid #e5e7eb;
+    }
 
+    .academic-years-search-input::placeholder {
+        color: #9ca3af;
+    }
 
-    // =========================================================
-    // CSRF TOKEN
-    // =========================================================
+    .academic-years-table-head {
+        background-color: #f9fafb;
+        border-bottom: 1px solid #e5e7eb;
+    }
 
-    function getCSRFToken() {
+    .academic-years-table-head th {
+        color: #4b5563;
+    }
 
-        // First try Django cookie
-        const cookie = document.cookie
-            .split("; ")
-            .find(row => row.startsWith("csrftoken="));
+    .academic-years-table-body tr {
+        border-bottom: 1px solid #f3f4f6;
+        background-color: #ffffff;
+    }
 
-        if (cookie) {
-            return decodeURIComponent(cookie.split("=")[1]);
-        }
+    .academic-years-table-body tr:last-child {
+        border-bottom: none;
+    }
 
-        // Fallback: try hidden CSRF input
-        const csrfInput = document.querySelector(
-            'input[name="csrfmiddlewaretoken"]'
-        );
+    .academic-years-table-body tr:hover {
+        background-color: #fafafa;
+    }
 
-        if (csrfInput) {
-            return csrfInput.value;
-        }
+    .academic-years-table-body td {
+        color: #374151;
+        padding: 9px 14px;
+        font-size: 13px;
+        line-height: 1.35;
+        vertical-align: middle;
+    }
 
-        // Fallback: try meta tag
-        const csrfMeta = document.querySelector(
-            'meta[name="csrf-token"]'
-        );
+    .academic-years-modal {
+        background-color: #ffffff;
+        color: #1f2937;
+    }
 
-        if (csrfMeta) {
-            return csrfMeta.getAttribute("content");
-        }
+    .academic-years-modal-header,
+    .academic-years-modal-footer {
+        border-color: #e5e7eb;
+    }
 
-        return null;
+    .academic-years-modal-footer {
+        background-color: #f9fafb;
+    }
+
+    .academic-years-label {
+        color: #374151;
+    }
+
+    .academic-years-input {
+        background-color: #ffffff;
+        color: #1f2937;
+        border: 1px solid #e5e7eb;
+    }
+
+    .academic-years-input::placeholder {
+        color: #9ca3af;
+    }
+
+    .academic-years-cancel {
+        color: #374151;
+        border-color: #e5e7eb;
+        background-color: #ffffff;
+    }
+
+    .academic-years-cancel:hover {
+        background-color: #f3f4f6;
+    }
+
+    .academic-years-delete-modal {
+        background-color: #ffffff;
+        color: #1f2937;
     }
 
 
-    // =========================================================
-    // LOAD ACADEMIC YEARS
-    // =========================================================
+    /* =====================================================
+       DARK MODE
+       IMPORTANT:
+       Project uses [data-theme="dark"]
+       NOT .dark
+    ====================================================== */
 
-    async function loadAcademicYears() {
+    [data-theme="dark"] .academic-years-page {
+        color: #f3f4f6;
+    }
 
-        try {
+    [data-theme="dark"] .academic-years-page h2 {
+        color: #f3f4f6 !important;
+    }
 
-            const response = await fetch(API_URL, {
-                method: "GET",
-                credentials: "same-origin"
-            });
+    [data-theme="dark"] .academic-years-page p {
+        color: #9ca3af !important;
+    }
 
-            if (!response.ok) {
-                throw new Error(
-                    `Failed to load academic years (${response.status})`
-                );
-            }
 
-            const data = await response.json();
+    /* SEARCH CARD */
 
-            academicYears = data.results || data;
+    [data-theme="dark"] .academic-years-search-card {
+        background-color: #181b25 !important;
+        border-color: #2f3441 !important;
+    }
 
-            renderAcademicYears(academicYears);
 
-        } catch (error) {
+    /* SEARCH INPUT */
 
-            console.error("Academic Years Error:", error);
+    [data-theme="dark"] .academic-years-search-input {
+        background-color: #1f2330 !important;
+        color: #f3f4f6 !important;
+        border-color: #374151 !important;
+    }
 
-            showEmptyState(
-                "Unable to load academic years."
-            );
+    [data-theme="dark"] .academic-years-search-input::placeholder {
+        color: #6b7280 !important;
+    }
+
+    [data-theme="dark"] .academic-years-search-input:focus {
+        border-color: #a82346 !important;
+        outline: none;
+        box-shadow: 0 0 0 1px #a82346;
+    }
+
+
+    /* TABLE CARD */
+
+    [data-theme="dark"] .academic-years-table-card {
+        background-color: #181b25 !important;
+        border-color: #2f3441 !important;
+    }
+
+
+    /* TABLE HEADER */
+
+    [data-theme="dark"] .academic-years-table-head {
+        background-color: #151821 !important;
+        border-color: #2f3441 !important;
+    }
+
+    [data-theme="dark"] .academic-years-table-head th {
+        color: #9ca3af !important;
+    }
+
+
+    /* TABLE BODY */
+
+    [data-theme="dark"] .academic-years-table-body tr {
+        background-color: #181b25 !important;
+        border-color: #2f3441 !important;
+    }
+
+    [data-theme="dark"] .academic-years-table-body tr:hover {
+        background-color: #1f2330 !important;
+    }
+
+    [data-theme="dark"] .academic-years-table-body td {
+        color: #e5e7eb !important;
+        padding: 9px 14px;
+        font-size: 13px;
+        line-height: 1.35;
+    }
+
+
+    /* TABLE ID */
+
+    [data-theme="dark"] .academic-year-id {
+        color: #d1d5db !important;
+    }
+
+
+    /* TABLE YEAR NAME */
+
+    [data-theme="dark"] .academic-year-name {
+        color: #f3f4f6 !important;
+    }
+
+
+    /* STATUS - CURRENT */
+
+    [data-theme="dark"] .academic-year-current {
+        background-color: rgba(34, 197, 94, 0.15) !important;
+        color: #86efac !important;
+    }
+
+
+    /* STATUS - INACTIVE */
+
+    [data-theme="dark"] .academic-year-inactive {
+        background-color: #272b35 !important;
+        color: #9ca3af !important;
+    }
+
+
+    /* =====================================================
+       ACTION BUTTONS
+       Compact and consistent with the management pages
+    ====================================================== */
+
+    .edit-year-btn,
+    .delete-year-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        min-width: 36px;
+        height: 32px;
+        padding: 0 10px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        line-height: 1;
+        white-space: nowrap;
+        cursor: pointer;
+        transition:
+            background-color 0.15s ease,
+            border-color 0.15s ease,
+            color 0.15s ease,
+            box-shadow 0.15s ease;
+    }
+
+    .edit-year-btn {
+        color: #374151;
+        background-color: #ffffff;
+        border: 1px solid #e5e7eb;
+    }
+
+    .edit-year-btn:hover {
+        color: #1f2937;
+        background-color: #f9fafb;
+        border-color: #d1d5db;
+    }
+
+    .delete-year-btn {
+        color: #ffffff;
+        background-color: #dc2626;
+        border: 1px solid #dc2626;
+    }
+
+    .delete-year-btn:hover {
+        color: #ffffff;
+        background-color: #b91c1c;
+        border-color: #b91c1c;
+    }
+
+    .edit-year-btn:focus-visible,
+    .delete-year-btn:focus-visible {
+        outline: 2px solid #a82346;
+        outline-offset: 2px;
+    }
+
+    /* Dark mode — Actions */
+
+    [data-theme="dark"] .edit-year-btn {
+        color: #d1d5db !important;
+        background-color: #1f2330 !important;
+        border-color: #374151 !important;
+    }
+
+    [data-theme="dark"] .edit-year-btn:hover {
+        color: #ffffff !important;
+        background-color: #2f3441 !important;
+        border-color: #4b5563 !important;
+    }
+
+    [data-theme="dark"] .delete-year-btn {
+        color: #ffffff !important;
+        background-color: #dc2626 !important;
+        border-color: #dc2626 !important;
+    }
+
+    [data-theme="dark"] .delete-year-btn:hover {
+        color: #ffffff !important;
+        background-color: #b91c1c !important;
+        border-color: #b91c1c !important;
+    }
+
+    /* Keep the Actions column compact and aligned */
+
+    .academic-years-table-body td:last-child {
+        width: 1%;
+        white-space: nowrap;
+        text-align: right;
+    }
+
+    /* EMPTY STATE */
+
+
+
+    [data-theme="dark"] .academic-years-empty {
+        color: #9ca3af !important;
+    }
+
+    [data-theme="dark"] .academic-years-empty-icon {
+        background-color: #3a202b !important;
+    }
+
+
+    /* =====================================================
+       ADD / EDIT MODAL
+    ====================================================== */
+
+    [data-theme="dark"] .academic-years-modal {
+        background-color: #181b25 !important;
+        color: #f3f4f6 !important;
+        border-color: #2f3441 !important;
+    }
+
+    [data-theme="dark"] .academic-years-modal-header,
+    [data-theme="dark"] .academic-years-modal-footer {
+        border-color: #2f3441 !important;
+    }
+
+    [data-theme="dark"] .academic-years-modal-footer {
+        background-color: #151821 !important;
+    }
+
+    [data-theme="dark"] .academic-years-modal-title {
+        color: #f3f4f6 !important;
+    }
+
+    [data-theme="dark"] .academic-years-modal-description {
+        color: #9ca3af !important;
+    }
+
+    [data-theme="dark"] .academic-years-label {
+        color: #e5e7eb !important;
+    }
+
+    [data-theme="dark"] .academic-years-input {
+        background-color: #1f2330 !important;
+        color: #f3f4f6 !important;
+        border-color: #374151 !important;
+    }
+
+    [data-theme="dark"] .academic-years-input::placeholder {
+        color: #6b7280 !important;
+    }
+
+    [data-theme="dark"] .academic-years-input:focus {
+        border-color: #a82346 !important;
+        outline: none;
+        box-shadow: 0 0 0 1px #a82346;
+    }
+
+    [data-theme="dark"] .academic-years-cancel {
+        background-color: #181b25 !important;
+        color: #d1d5db !important;
+        border-color: #374151 !important;
+    }
+
+    [data-theme="dark"] .academic-years-cancel:hover {
+        background-color: #2f3441 !important;
+        color: #ffffff !important;
+    }
+
+
+    /* =====================================================
+       DELETE MODAL
+    ====================================================== */
+
+    [data-theme="dark"] .academic-years-delete-modal {
+        background-color: #181b25 !important;
+        color: #f3f4f6 !important;
+        border-color: #2f3441 !important;
+    }
+
+    [data-theme="dark"] .academic-years-delete-title {
+        color: #f3f4f6 !important;
+    }
+
+    [data-theme="dark"] .academic-years-delete-description {
+        color: #9ca3af !important;
+    }
+
+    [data-theme="dark"] .academic-years-delete-text {
+        color: #d1d5db !important;
+    }
+
+    [data-theme="dark"] .academic-years-delete-name {
+        color: #f3f4f6 !important;
+    }
+
+    [data-theme="dark"] .academic-years-delete-footer {
+        background-color: #151821 !important;
+        border-color: #2f3441 !important;
+    }
+
+
+    /* =====================================================
+       RESPONSIVE ACTIONS
+    ====================================================== */
+
+    @media (max-width: 640px) {
+        .academic-years-table-body td:last-child {
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        .edit-year-btn,
+        .delete-year-btn {
+            min-width: 36px;
+            height: 34px;
+            padding: 0 9px;
         }
     }
 
 
-    // =========================================================
-    // RENDER
-    // =========================================================
+    /* =====================================================
+       DATE INPUT ICON
+    ====================================================== */
 
-    function renderAcademicYears(items) {
-
-        if (!tableBody) return;
-
-        tableBody.innerHTML = "";
-
-        if (!items.length) {
-
-            showEmptyState(
-                "No academic years found."
-            );
-
-            return;
-        }
-
-        if (emptyState) {
-            emptyState.classList.add("hidden");
-        }
+    [data-theme="dark"] .academic-years-input::-webkit-calendar-picker-indicator {
+        filter: invert(1);
+        opacity: 0.8;
+    }
+</style>
 
 
-        items.forEach((year) => {
+<div class="academic-years-page space-y-6">
 
-            const row = document.createElement("tr");
+    <!-- =====================================================
+         PAGE HEADER
+    ====================================================== -->
 
-            row.innerHTML = `
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
 
-                <td class="px-4 py-3">
-                    ${year.id}
-                </td>
+        <div>
 
-                <td class="px-4 py-3 font-medium">
-                    ${escapeHtml(year.name)}
-                </td>
+            <h2 class="text-xl font-semibold text-gray-800">
+                Academic Years
+            </h2>
 
-                <td class="px-4 py-3">
-                    ${year.start_date}
-                </td>
+            <p class="text-sm text-gray-500 mt-1">
+                Manage academic years used throughout the examination system.
+            </p>
 
-                <td class="px-4 py-3">
-                    ${year.end_date}
-                </td>
+        </div>
 
-                <td class="px-4 py-3">
 
-                    ${
-                        year.is_current
+        <button
+            type="button"
+            id="addAcademicYearBtn"
+            class="inline-flex items-center justify-center gap-2
+                   px-4 py-2.5 rounded-lg
+                   bg-atu-primary text-white
+                   text-sm font-medium
+                   hover:bg-atu-dark transition"
+        >
 
-                        ? `
-                            <span class="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
-                                Current
-                            </span>
-                          `
+            <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M12 5v14M5 12h14"
+                />
+            </svg>
 
-                        : `
-                            <span class="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
-                                Inactive
-                            </span>
-                          `
-                    }
+            Add Academic Year
 
-                </td>
+        </button>
 
-                <td class="px-4 py-3">
+    </div>
 
-                    <div class="flex gap-2">
 
-                        <button
-                            type="button"
-                            class="edit-year-btn px-3 py-1 text-sm rounded"
-                            data-id="${year.id}">
-                            Edit
-                        </button>
+    <!-- =====================================================
+         SEARCH
+    ====================================================== -->
 
-                        <button
-                            type="button"
-                            class="delete-year-btn px-3 py-1 text-sm rounded"
-                            data-id="${year.id}">
-                            Delete
-                        </button>
+    <div
+        class="academic-years-search-card
+               rounded-xl p-4"
+    >
+
+        <div class="relative max-w-sm">
+
+            <svg
+                class="absolute left-3 top-1/2
+                       -translate-y-1/2
+                       w-4 h-4
+                       text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M21 21l-4.35-4.35m1.35-5.65a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+            </svg>
+
+
+            <input
+                type="search"
+                id="academicYearSearch"
+                placeholder="Search academic years..."
+                class="academic-years-search-input
+                       w-full pl-9 pr-4 py-2.5
+                       text-sm rounded-lg outline-none"
+            >
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         TABLE
+    ====================================================== -->
+
+    <div
+        class="academic-years-table-card
+               rounded-xl overflow-hidden"
+    >
+
+        <div class="overflow-x-auto">
+
+            <table class="w-full">
+
+                <!-- TABLE HEADER -->
+
+                <thead
+                    class="academic-years-table-head"
+                >
+
+                    <tr>
+
+                        <th
+                            class="px-4 py-3
+                                   text-left
+                                   text-xs font-semibold"
+                        >
+                            Academic ID
+                        </th>
+
+
+                        <th
+                            class="px-4 py-3
+                                   text-left
+                                   text-xs font-semibold"
+                        >
+                            Academic Year
+                        </th>
+
+
+                        <th
+                            class="px-4 py-3
+                                   text-left
+                                   text-xs font-semibold"
+                        >
+                            Start Date
+                        </th>
+
+
+                        <th
+                            class="px-4 py-3
+                                   text-left
+                                   text-xs font-semibold"
+                        >
+                            End Date
+                        </th>
+
+
+                        <th
+                            class="px-4 py-3
+                                   text-left
+                                   text-xs font-semibold"
+                        >
+                            Status
+                        </th>
+
+
+                        <th
+                            class="px-4 py-3
+                                   text-right
+                                   text-xs font-semibold"
+                        >
+                            Actions
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <!-- TABLE BODY -->
+
+                <tbody
+                    id="academicYearsTableBody"
+                    class="academic-years-table-body"
+                >
+                    <!-- JavaScript inserts rows here -->
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- =================================================
+             EMPTY STATE
+        ================================================== -->
+
+        <div
+            id="academicYearsEmptyState"
+            class="academic-years-empty
+                   hidden
+                   px-6 py-12 text-center"
+        >
+
+            <div
+                class="academic-years-empty-icon
+                       w-12 h-12 mx-auto mb-3
+                       rounded-full
+                       bg-atu-light
+                       flex items-center justify-center"
+            >
+
+                <svg
+                    class="w-6 h-6 text-atu-primary"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M8 7V3m8 4V3m-9 4h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    />
+                </svg>
+
+            </div>
+
+
+            <h3
+                class="text-sm font-semibold
+                       text-gray-700"
+            >
+                No academic years found
+            </h3>
+
+
+            <p
+                class="text-sm text-gray-500 mt-1"
+            >
+                Add an academic year to get started.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     ADD / EDIT ACADEMIC YEAR MODAL
+====================================================== -->
+
+<div
+    id="academicYearModal"
+    class="fixed inset-0 z-[100] hidden
+           flex items-center justify-center
+           bg-black/40 p-4"
+>
+
+    <div
+        class="academic-years-modal
+               w-full max-w-lg
+               rounded-xl shadow-xl
+               border"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="academicYearModalTitle"
+    >
+
+        <!-- MODAL HEADER -->
+
+        <div
+            class="academic-years-modal-header
+                   flex items-center justify-between
+                   px-6 py-4
+                   border-b"
+        >
+
+            <div>
+
+                <h3
+                    id="academicYearModalTitle"
+                    class="academic-years-modal-title
+                           text-base font-semibold"
+                >
+                    Add Academic Year
+                </h3>
+
+
+                <p
+                    class="academic-years-modal-description
+                           text-xs mt-1"
+                >
+                    Enter the academic year details.
+                </p>
+
+            </div>
+
+
+            <button
+                type="button"
+                id="closeAcademicYearModal"
+                data-close-academic-year
+                class="w-8 h-8 rounded-lg
+                       flex items-center justify-center
+                       text-gray-400
+                       hover:bg-gray-100
+                       hover:text-gray-700"
+                aria-label="Close"
+            >
+
+                <svg
+                    class="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M6 18L18 6M6 6l12 12"
+                    />
+                </svg>
+
+            </button>
+
+        </div>
+
+
+        <!-- FORM -->
+
+        <form id="academicYearForm">
+
+            <input
+                type="hidden"
+                id="academicYearId"
+                value=""
+            >
+
+            <input
+                type="hidden"
+                id="academicYearMethod"
+                value="POST"
+            >
+
+
+            <div class="p-6 space-y-5">
+
+                <!-- ACADEMIC YEAR -->
+
+                <div>
+
+                    <label
+                        for="academicYearName"
+                        class="academic-years-label
+                               block text-sm font-medium
+                               mb-1.5"
+                    >
+                        Academic Year
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="academicYearName"
+                        name="name"
+                        placeholder="e.g. 2026/2027"
+                        maxlength="20"
+                        required
+                        class="academic-years-input
+                               w-full px-3.5 py-2.5
+                               text-sm rounded-lg
+                               outline-none"
+                    >
+
+                </div>
+
+
+                <!-- DATES -->
+
+                <div
+                    class="grid grid-cols-1
+                           sm:grid-cols-2 gap-4"
+                >
+
+                    <!-- START DATE -->
+
+                    <div>
+
+                        <label
+                            for="startDate"
+                            class="academic-years-label
+                                   block text-sm font-medium
+                                   mb-1.5"
+                        >
+                            Start Date
+                        </label>
+
+
+                        <input
+                            type="date"
+                            id="startDate"
+                            name="start_date"
+                            required
+                            class="academic-years-input
+                                   w-full px-3.5 py-2.5
+                                   text-sm rounded-lg
+                                   outline-none"
+                        >
 
                     </div>
 
-                </td>
-            `;
 
-            tableBody.appendChild(row);
-        });
-    }
+                    <!-- END DATE -->
 
+                    <div>
 
-    // =========================================================
-    // SEARCH
-    // =========================================================
+                        <label
+                            for="endDate"
+                            class="academic-years-label
+                                   block text-sm font-medium
+                                   mb-1.5"
+                        >
+                            End Date
+                        </label>
 
-    if (searchInput) {
 
-        searchInput.addEventListener("input", () => {
+                        <input
+                            type="date"
+                            id="endDate"
+                            name="end_date"
+                            required
+                            class="academic-years-input
+                                   w-full px-3.5 py-2.5
+                                   text-sm rounded-lg
+                                   outline-none"
+                        >
 
-            const query = searchInput.value
-                .toLowerCase()
-                .trim();
+                    </div>
 
-            const filtered = academicYears.filter((year) => {
+                </div>
+
+
+                <!-- CURRENT -->
 
-                const name =
-                    String(year.name || "").toLowerCase();
+                <label
+                    class="flex items-center gap-2.5 cursor-pointer"
+                >
 
-                return name.includes(query);
-            });
+                    <input
+                        type="checkbox"
+                        id="isCurrent"
+                        name="is_current"
+                        class="w-4 h-4 accent-[#8B1538]"
+                    >
+
+
+                    <span
+                        class="academic-years-label
+                               text-sm"
+                    >
+                        Set as current academic year
+                    </span>
+
+                </label>
+
+            </div>
+
+
+            <!-- MODAL FOOTER -->
+
+            <div
+                class="academic-years-modal-footer
+                       flex items-center justify-end
+                       gap-3 px-6 py-4
+                       border-t
+                       rounded-b-xl"
+            >
+
+                <button
+                    type="button"
+                    id="cancelAcademicYear"
+                    data-close-academic-year
+                    class="academic-years-cancel
+                           px-4 py-2
+                           text-sm font-medium
+                           border rounded-lg"
+                >
+                    Cancel
+                </button>
+
+
+                <button
+                    type="submit"
+                    class="px-4 py-2
+                           text-sm font-medium
+                           text-white
+                           bg-atu-primary
+                           rounded-lg
+                           hover:bg-atu-dark"
+                >
+                    Save Academic Year
+                </button>
 
-            renderAcademicYears(filtered);
-        });
-    }
+            </div>
 
+        </form>
 
-    // =========================================================
-    // OPEN ADD MODAL
-    // =========================================================
+    </div>
 
-    if (addButton) {
+</div>
 
-        addButton.addEventListener("click", () => {
 
-            if (form) {
-                form.reset();
-            }
 
-            const idField =
-                document.getElementById("academicYearId");
+<!-- =====================================================
+     DELETE CONFIRMATION MODAL
+====================================================== -->
 
-            const methodField =
-                document.getElementById("academicYearMethod");
+<div
+    id="deleteAcademicYearModal"
+    class="fixed inset-0 z-[110] hidden
+           flex items-center justify-center
+           bg-black/40 p-4"
+>
 
-            if (idField) {
-                idField.value = "";
-            }
+    <div
+        class="academic-years-delete-modal
+               w-full max-w-md
+               rounded-xl shadow-xl
+               border"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="deleteAcademicYearTitle"
+    >
+
+        <!-- DELETE HEADER -->
+
+        <div
+            class="px-6 py-5
+                   border-b
+                   border-gray-200"
+        >
+
+            <div class="flex items-center gap-3">
+
+                <div
+                    class="w-10 h-10 rounded-full
+                           bg-red-100
+                           flex items-center justify-center"
+                >
+
+                    <svg
+                        class="w-5 h-5 text-red-600"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M12 9v4m0 4h.01M10.29 3.86l-8.18 14A2 2 0 003.82 21h16.36a2 2 0 001.71-3.14l-8.18-14a2 2 0 00-3.42 0z"
+                        />
+                    </svg>
 
-            if (methodField) {
-                methodField.value = "POST";
-            }
+                </div>
 
-            if (modal) {
-                modal.classList.remove("hidden");
-            }
-        });
-    }
 
+                <div>
 
-    // =========================================================
-    // CLOSE ADD / EDIT MODAL
-    // =========================================================
+                    <h3
+                        id="deleteAcademicYearTitle"
+                        class="academic-years-delete-title
+                               text-base font-semibold"
+                    >
+                        Delete Academic Year?
+                    </h3>
 
-    function closeModal() {
 
-        if (modal) {
-            modal.classList.add("hidden");
-        }
+                    <p
+                        class="academic-years-delete-description
+                               text-xs mt-1"
+                    >
+                        This action cannot be undone.
+                    </p>
 
-        if (form) {
-            form.reset();
-        }
+                </div>
 
-        const idField =
-            document.getElementById("academicYearId");
+            </div>
 
-        const methodField =
-            document.getElementById("academicYearMethod");
+        </div>
 
-        if (idField) {
-            idField.value = "";
-        }
 
-        if (methodField) {
-            methodField.value = "POST";
-        }
-    }
+        <!-- DELETE BODY -->
 
+        <div class="px-6 py-5">
 
-    document
-        .querySelectorAll("[data-close-academic-year]")
-        .forEach((button) => {
+            <p
+                class="academic-years-delete-text
+                       text-sm"
+            >
+                Are you sure you want to delete
 
-            button.addEventListener(
-                "click",
-                closeModal
-            );
+                <span
+                    id="deleteAcademicYearName"
+                    class="academic-years-delete-name
+                           font-semibold"
+                ></span>?
 
-        });
+            </p>
 
+        </div>
 
-    // =========================================================
-    // CREATE / UPDATE
-    // =========================================================
 
-    if (form) {
+        <!-- DELETE FOOTER -->
 
-        form.addEventListener("submit", async (event) => {
+        <div
+            class="academic-years-delete-footer
+                   flex items-center justify-end
+                   gap-3 px-6 py-4
+                   border-t
+                   border-gray-200
+                   bg-gray-50
+                   rounded-b-xl"
+        >
 
-            event.preventDefault();
+            <button
+                type="button"
+                id="cancelDeleteAcademicYear"
+                class="academic-years-cancel
+                       px-4 py-2
+                       text-sm font-medium
+                       border rounded-lg"
+            >
+                Cancel
+            </button>
 
 
-            const id =
-                document.getElementById("academicYearId")?.value.trim();
+            <button
+                type="button"
+                id="confirmDeleteAcademicYear"
+                class="px-4 py-2
+                       text-sm font-medium
+                       text-white
+                       bg-red-600
+                       rounded-lg
+                       hover:bg-red-700"
+            >
+                Delete Academic Year
+            </button>
 
-            const name =
-                document.getElementById("academicYearName")?.value.trim();
+        </div>
 
-            const startDate =
-                document.getElementById("startDate")?.value;
+    </div>
 
-            const endDate =
-                document.getElementById("endDate")?.value;
+</div>
 
-            const isCurrent =
-                document.getElementById("isCurrent")?.checked || false;
 
 
-            // Basic validation
-            if (!name) {
+<!-- =====================================================
+     JAVASCRIPT
+====================================================== -->
 
-                alert("Please enter the academic year.");
+<script src="{% static 'js/academic-management/academicyears.js' %}"></script>
 
-                return;
-            }
-
-            if (!startDate) {
-
-                alert("Please select the start date.");
-
-                return;
-            }
-
-            if (!endDate) {
-
-                alert("Please select the end date.");
-
-                return;
-            }
-
-            if (startDate > endDate) {
-
-                alert(
-                    "Start date cannot be after end date."
-                );
-
-                return;
-            }
-
-
-            const payload = {
-
-                name: name,
-
-                start_date: startDate,
-
-                end_date: endDate,
-
-                is_current: isCurrent
-
-            };
-
-
-            try {
-
-                // =================================================
-                // CSRF
-                // =================================================
-
-                const csrfToken = getCSRFToken();
-
-                if (!csrfToken) {
-
-                    throw new Error(
-                        "CSRF token was not found. Please refresh the page."
-                    );
-                }
-
-
-                // =================================================
-                // URL
-                // =================================================
-
-                const url = id
-                    ? `${API_URL}${id}/`
-                    : API_URL;
-
-
-                // =================================================
-                // METHOD
-                // =================================================
-
-                const method = id
-                    ? "PATCH"
-                    : "POST";
-
-
-                // =================================================
-                // SAVE REQUEST
-                // =================================================
-
-                const response = await fetch(url, {
-
-                    method: method,
-
-                    credentials: "same-origin",
-
-                    headers: {
-
-                        "Content-Type":
-                            "application/json",
-
-                        "Accept":
-                            "application/json",
-
-                        "X-CSRFToken":
-                            csrfToken
-
-                    },
-
-                    body:
-                        JSON.stringify(payload)
-
-                });
-
-
-                // =================================================
-                // RESPONSE
-                // =================================================
-
-                if (!response.ok) {
-
-                    let errorData = null;
-
-                    try {
-
-                        errorData =
-                            await response.json();
-
-                    } catch {
-
-                        errorData = null;
-                    }
-
-
-                    console.error(
-                        "Academic Year API Error:",
-                        response.status,
-                        errorData
-                    );
-
-
-                    // Django / DRF error message
-                    let message =
-                        `Unable to save academic year. Server returned ${response.status}.`;
-
-
-                    if (errorData) {
-
-                        if (typeof errorData === "object") {
-
-                            const messages = [];
-
-                            Object.entries(errorData)
-                                .forEach(([field, errors]) => {
-
-                                    if (Array.isArray(errors)) {
-
-                                        messages.push(
-                                            `${field}: ${errors.join(", ")}`
-                                        );
-
-                                    } else {
-
-                                        messages.push(
-                                            `${field}: ${errors}`
-                                        );
-                                    }
-
-                                });
-
-                            if (messages.length) {
-
-                                message =
-                                    messages.join("\n");
-                            }
-                        }
-                    }
-
-
-                    throw new Error(message);
-                }
-
-
-                // =================================================
-                // SUCCESS
-                // =================================================
-
-                closeModal();
-
-                await loadAcademicYears();
-
-
-            } catch (error) {
-
-                console.error(
-                    "Save Academic Year Error:",
-                    error
-                );
-
-                alert(
-                    error.message ||
-                    "Unable to save academic year."
-                );
-            }
-
-        });
-    }
-
-
-    // =========================================================
-    // OPEN DELETE MODAL
-    // =========================================================
-
-    function openDeleteModal(id) {
-
-        const year = academicYears.find(
-            item =>
-                String(item.id) === String(id)
-        );
-
-        if (!year) {
-            return;
-        }
-
-
-        selectedDeleteId = year.id;
-
-
-        if (deleteYearName) {
-
-            deleteYearName.textContent =
-                year.name;
-        }
-
-
-        if (deleteModal) {
-
-            deleteModal.classList.remove("hidden");
-        }
-    }
-
-
-    // =========================================================
-    // CLOSE DELETE MODAL
-    // =========================================================
-
-    function closeDeleteModal() {
-
-        selectedDeleteId = null;
-
-
-        if (deleteModal) {
-
-            deleteModal.classList.add("hidden");
-        }
-
-
-        if (deleteYearName) {
-
-            deleteYearName.textContent = "";
-        }
-    }
-
-
-    // =========================================================
-    // CANCEL DELETE
-    // =========================================================
-
-    if (cancelDeleteButton) {
-
-        cancelDeleteButton.addEventListener(
-            "click",
-            closeDeleteModal
-        );
-    }
-
-
-    // =========================================================
-    // CONFIRM DELETE
-    // =========================================================
-
-    if (confirmDeleteButton) {
-
-        confirmDeleteButton.addEventListener(
-            "click",
-            async () => {
-
-                if (!selectedDeleteId) {
-                    return;
-                }
-
-
-                const id =
-                    selectedDeleteId;
-
-
-                try {
-
-                    confirmDeleteButton.disabled =
-                        true;
-
-
-                    // Get CSRF
-                    const csrfToken =
-                        getCSRFToken();
-
-
-                    if (!csrfToken) {
-
-                        throw new Error(
-                            "CSRF token was not found. Please refresh the page."
-                        );
-                    }
-
-
-                    const response =
-                        await fetch(
-                            `${API_URL}${id}/`,
-                            {
-
-                                method:
-                                    "DELETE",
-
-                                credentials:
-                                    "same-origin",
-
-                                headers: {
-
-                                    "Accept":
-                                        "application/json",
-
-                                    "X-CSRFToken":
-                                        csrfToken
-
-                                }
-
-                            }
-                        );
-
-
-                    if (!response.ok) {
-
-                        let errorData = null;
-
-                        try {
-
-                            errorData =
-                                await response.json();
-
-                        } catch {
-
-                            errorData = null;
-                        }
-
-
-                        console.error(
-                            "Delete Academic Year Error:",
-                            response.status,
-                            errorData
-                        );
-
-
-                        throw new Error(
-                            `Unable to delete academic year. Server returned ${response.status}.`
-                        );
-                    }
-
-
-                    // Success
-                    closeDeleteModal();
-
-                    await loadAcademicYears();
-
-
-                } catch (error) {
-
-                    console.error(
-                        "Delete Error:",
-                        error
-                    );
-
-                    alert(
-                        error.message ||
-                        "Unable to delete academic year."
-                    );
-
-
-                } finally {
-
-                    confirmDeleteButton.disabled =
-                        false;
-                }
-
-            }
-        );
-    }
-
-
-    // =========================================================
-    // EDIT / DELETE BUTTONS
-    // =========================================================
-
-    document.addEventListener(
-        "click",
-        (event) => {
-
-
-            // =================================================
-            // EDIT
-            // =================================================
-
-            const editButton =
-                event.target.closest(
-                    ".edit-year-btn"
-                );
-
-
-            if (editButton) {
-
-                const id =
-                    editButton.dataset.id;
-
-
-                const year =
-                    academicYears.find(
-                        item =>
-                            String(item.id) ===
-                            String(id)
-                    );
-
-
-                if (!year) {
-                    return;
-                }
-
-
-                const idField =
-                    document.getElementById(
-                        "academicYearId"
-                    );
-
-                const methodField =
-                    document.getElementById(
-                        "academicYearMethod"
-                    );
-
-                const nameField =
-                    document.getElementById(
-                        "academicYearName"
-                    );
-
-                const startDateField =
-                    document.getElementById(
-                        "startDate"
-                    );
-
-                const endDateField =
-                    document.getElementById(
-                        "endDate"
-                    );
-
-                const currentField =
-                    document.getElementById(
-                        "isCurrent"
-                    );
-
-
-                if (idField) {
-
-                    idField.value =
-                        year.id;
-                }
-
-
-                if (methodField) {
-
-                    methodField.value =
-                        "PATCH";
-                }
-
-
-                if (nameField) {
-
-                    nameField.value =
-                        year.name;
-                }
-
-
-                if (startDateField) {
-
-                    startDateField.value =
-                        year.start_date;
-                }
-
-
-                if (endDateField) {
-
-                    endDateField.value =
-                        year.end_date;
-                }
-
-
-                if (currentField) {
-
-                    currentField.checked =
-                        Boolean(
-                            year.is_current
-                        );
-                }
-
-
-                if (modal) {
-
-                    modal.classList.remove(
-                        "hidden"
-                    );
-                }
-
-
-                return;
-            }
-
-
-            // =================================================
-            // DELETE
-            // =================================================
-
-            const deleteButton =
-                event.target.closest(
-                    ".delete-year-btn"
-                );
-
-
-            if (deleteButton) {
-
-                const id =
-                    deleteButton.dataset.id;
-
-                openDeleteModal(id);
-            }
-
-        }
-    );
-
-
-    // =========================================================
-    // EMPTY STATE
-    // =========================================================
-
-    function showEmptyState(message) {
-
-        if (!tableBody || !emptyState) {
-            return;
-        }
-
-
-        tableBody.innerHTML = "";
-
-
-        emptyState.textContent =
-            message;
-
-
-        emptyState.classList.remove(
-            "hidden"
-        );
-    }
-
-
-    // =========================================================
-    // SECURITY
-    // =========================================================
-
-    function escapeHtml(value) {
-
-        const div =
-            document.createElement(
-                "div"
-            );
-
-        div.textContent =
-            value ?? "";
-
-        return div.innerHTML;
-    }
-
-
-    // =========================================================
-    // INITIAL LOAD
-    // =========================================================
-
-    loadAcademicYears();
-
-});
+{% endblock %}
