@@ -112,6 +112,240 @@
             background: #0F1117 !important;
         }
 
+        /* =====================================================
+           GLOBAL DARK MODE — PAGE CONTENT, TABLES & FORMS
+           ===================================================== */
+
+        [data-theme="dark"] body {
+            background: #0B0D12 !important;
+            color: #E5E7EB !important;
+        }
+
+        [data-theme="dark"] #page-content {
+            background: #0B0D12 !important;
+            color: #E5E7EB !important;
+        }
+
+        /* Main page surfaces/cards */
+        [data-theme="dark"] #page-content .bg-white,
+        [data-theme="dark"] #page-content .bg-gray-50,
+        [data-theme="dark"] #page-content .bg-gray-100 {
+            background-color: #151821 !important;
+        }
+
+        [data-theme="dark"] #page-content .bg-gray-50 {
+            background-color: #12151C !important;
+        }
+
+        [data-theme="dark"] #page-content .bg-gray-100 {
+            background-color: #1A1E28 !important;
+        }
+
+        /* Text */
+        [data-theme="dark"] #page-content .text-gray-900,
+        [data-theme="dark"] #page-content .text-gray-800,
+        [data-theme="dark"] #page-content .text-gray-700 {
+            color: #F3F4F6 !important;
+        }
+
+        [data-theme="dark"] #page-content .text-gray-600 {
+            color: #D1D5DB !important;
+        }
+
+        [data-theme="dark"] #page-content .text-gray-500,
+        [data-theme="dark"] #page-content .text-gray-400 {
+            color: #9CA3AF !important;
+        }
+
+        /* Borders/dividers */
+        [data-theme="dark"] #page-content .border-gray-100,
+        [data-theme="dark"] #page-content .border-gray-200,
+        [data-theme="dark"] #page-content .border-gray-300 {
+            border-color: #2A2F3A !important;
+        }
+
+        /* Search boxes, inputs, selects, textareas */
+        [data-theme="dark"] #page-content input,
+        [data-theme="dark"] #page-content select,
+        [data-theme="dark"] #page-content textarea {
+            background-color: #11141B !important;
+            color: #F3F4F6 !important;
+            border-color: #343A46 !important;
+        }
+
+        [data-theme="dark"] #page-content input::placeholder,
+        [data-theme="dark"] #page-content textarea::placeholder {
+            color: #7F8795 !important;
+        }
+
+        [data-theme="dark"] #page-content input:focus,
+        [data-theme="dark"] #page-content select:focus,
+        [data-theme="dark"] #page-content textarea:focus {
+            border-color: #A82346 !important;
+            box-shadow: 0 0 0 3px rgba(168, 35, 70, 0.18) !important;
+            outline: none !important;
+        }
+
+        [data-theme="dark"] #page-content option {
+            background: #151821 !important;
+            color: #F3F4F6 !important;
+        }
+
+        /* Tables */
+        [data-theme="dark"] #page-content table {
+            background-color: #151821 !important;
+            color: #E5E7EB !important;
+        }
+
+        [data-theme="dark"] #page-content thead,
+        [data-theme="dark"] #page-content thead tr {
+            background-color: #1B1F29 !important;
+        }
+
+        [data-theme="dark"] #page-content th {
+            background-color: #1B1F29 !important;
+            color: #AEB7C6 !important;
+            border-color: #2A2F3A !important;
+        }
+
+        [data-theme="dark"] #page-content tbody {
+            background-color: #151821 !important;
+        }
+
+        [data-theme="dark"] #page-content tbody tr {
+            background-color: #151821 !important;
+            border-color: #2A2F3A !important;
+        }
+
+        [data-theme="dark"] #page-content tbody tr:hover {
+            background-color: #1D222D !important;
+        }
+
+        [data-theme="dark"] #page-content td {
+            color: #D7DCE5 !important;
+            border-color: #2A2F3A !important;
+        }
+
+        /* Tailwind hover backgrounds used by action buttons */
+        [data-theme="dark"] #page-content .hover\:bg-gray-50:hover,
+        [data-theme="dark"] #page-content .hover\:bg-gray-100:hover,
+        [data-theme="dark"] #page-content .hover\:bg-gray-200:hover {
+            background-color: #242936 !important;
+        }
+
+        /* Dynamic modals created by page JavaScript */
+        [data-theme="dark"] .atu-dynamic-modal .bg-white,
+        [data-theme="dark"] .atu-dynamic-modal .bg-gray-50,
+        [data-theme="dark"] .atu-dynamic-modal .bg-gray-100 {
+            background-color: #151821 !important;
+        }
+
+        [data-theme="dark"] .atu-dynamic-modal .text-gray-900,
+        [data-theme="dark"] .atu-dynamic-modal .text-gray-800,
+        [data-theme="dark"] .atu-dynamic-modal .text-gray-700 {
+            color: #F3F4F6 !important;
+        }
+
+        [data-theme="dark"] .atu-dynamic-modal .text-gray-600 {
+            color: #D1D5DB !important;
+        }
+
+        [data-theme="dark"] .atu-dynamic-modal .text-gray-500,
+        [data-theme="dark"] .atu-dynamic-modal .text-gray-400 {
+            color: #9CA3AF !important;
+        }
+
+        [data-theme="dark"] .atu-dynamic-modal .border-gray-100,
+        [data-theme="dark"] .atu-dynamic-modal .border-gray-200,
+        [data-theme="dark"] .atu-dynamic-modal .border-gray-300 {
+            border-color: #2A2F3A !important;
+        }
+
+        [data-theme="dark"] .atu-dynamic-modal input,
+        [data-theme="dark"] .atu-dynamic-modal select,
+        [data-theme="dark"] .atu-dynamic-modal textarea {
+            background-color: #11141B !important;
+            color: #F3F4F6 !important;
+            border-color: #343A46 !important;
+        }
+
+        [data-theme="dark"] .atu-dynamic-modal input::placeholder,
+        [data-theme="dark"] .atu-dynamic-modal textarea::placeholder {
+            color: #7F8795 !important;
+        }
+
+        [data-theme="dark"] .atu-dynamic-modal table,
+        [data-theme="dark"] .atu-dynamic-modal tbody {
+            background-color: #151821 !important;
+        }
+
+        [data-theme="dark"] .atu-dynamic-modal thead,
+        [data-theme="dark"] .atu-dynamic-modal th {
+            background-color: #1B1F29 !important;
+            color: #AEB7C6 !important;
+        }
+
+        [data-theme="dark"] .atu-dynamic-modal td,
+        [data-theme="dark"] .atu-dynamic-modal tr {
+            border-color: #2A2F3A !important;
+        }
+
+        [data-theme="dark"] .atu-dynamic-modal td {
+            color: #D7DCE5 !important;
+        }
+
+        /* =====================================================
+           MODAL POSITION PROTECTION
+           Keep Edit / Delete / Upload / View modals centered.
+           Dark mode must not change their positioning.
+           ===================================================== */
+
+        [data-theme="dark"] #studentModal:not(.hidden),
+        [data-theme="dark"] #deleteStudentModal:not(.hidden),
+        [data-theme="dark"] #uploadStudentsModal:not(.hidden),
+        [data-theme="dark"] #viewStudentModal:not(.hidden) {
+            position: fixed !important;
+            inset: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            z-index: 99999 !important;
+        }
+
+        [data-theme="dark"] #studentModal:not(.hidden) > div,
+        [data-theme="dark"] #deleteStudentModal:not(.hidden) > div,
+        [data-theme="dark"] #uploadStudentsModal:not(.hidden) > div,
+        [data-theme="dark"] #viewStudentModal:not(.hidden) > div {
+            position: relative !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+        }
+
+        /* Native scrollbar inside dark tables/modals */
+        [data-theme="dark"] #page-content ::-webkit-scrollbar,
+        [data-theme="dark"] .atu-dynamic-modal ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        [data-theme="dark"] #page-content ::-webkit-scrollbar-track,
+        [data-theme="dark"] .atu-dynamic-modal ::-webkit-scrollbar-track {
+            background: #10131A;
+        }
+
+        [data-theme="dark"] #page-content ::-webkit-scrollbar-thumb,
+        [data-theme="dark"] .atu-dynamic-modal ::-webkit-scrollbar-thumb {
+            background: #343A46;
+            border-radius: 999px;
+        }
+
+        [data-theme="dark"] #page-content ::-webkit-scrollbar-thumb:hover,
+        [data-theme="dark"] .atu-dynamic-modal ::-webkit-scrollbar-thumb:hover {
+            background: #4B5563;
+        }
+
     </style>
 
 </head>

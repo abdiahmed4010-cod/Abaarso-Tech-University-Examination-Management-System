@@ -5,27 +5,32 @@
     Students — ATU EMS
 {% endblock title %}
 
+
 {% block extra_css %}
-    <link
-        rel="stylesheet"
-        href="{% static 'css/student-management/students.css' %}"
-    >
+
+<link
+    rel="stylesheet"
+    href="{% static 'css/student-management/students.css' %}"
+>
+
 {% endblock extra_css %}
+
 
 {% block content %}
 
 <div
-    class="student-management-page"
     id="studentManagementPage"
+    class="student-management-page"
 >
 
-    <!-- =====================================================
+    <!-- =========================================================
          PAGE HEADER
-         ===================================================== -->
+         ========================================================= -->
 
-    <div class="flex flex-col gap-4 mb-6 lg:flex-row lg:items-center lg:justify-between">
+    <div class="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
 
         <div>
+
             <h1 class="text-2xl font-semibold tracking-tight">
                 Students
             </h1>
@@ -33,17 +38,55 @@
             <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
                 Manage registered students and their academic information.
             </p>
+
         </div>
+
+
+        <!-- ACTION BUTTONS -->
 
         <div class="flex flex-wrap items-center gap-2">
 
+            <!-- Export Students -->
+
+            <button
+                type="button"
+                id="exportStudentsBtn"
+                class="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+                title="Export students"
+            >
+
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="17"
+                    height="17"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <path d="M12 3v12"></path>
+                    <path d="m7 10 5 5 5-5"></path>
+                    <path d="M5 21h14"></path>
+                </svg>
+
+                <span>
+                    Export Students
+                </span>
+
+            </button>
+
+
             <!-- Upload Students -->
+
             <button
                 type="button"
                 id="uploadStudentsBtn"
                 class="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
                 title="Upload students from CSV or Excel"
             >
+
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="17"
@@ -58,20 +101,24 @@
                     <path d="M12 3v12"></path>
                     <path d="m7 8 5-5 5 5"></path>
                     <path d="M5 21h14"></path>
-                    <path d="M5 17v4"></path>
-                    <path d="M19 17v4"></path>
                 </svg>
 
-                <span>Upload Students</span>
+                <span>
+                    Upload Students
+                </span>
+
             </button>
 
-            <!-- Add Students -->
+
+            <!-- Add Student -->
+
             <button
                 type="button"
                 id="addStudentBtn"
                 class="inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold text-white transition hover:opacity-90"
                 style="background-color: #720E24;"
             >
+
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="17"
@@ -87,7 +134,10 @@
                     <path d="M5 12h14"></path>
                 </svg>
 
-                <span>Add Students</span>
+                <span>
+                    Add Student
+                </span>
+
             </button>
 
         </div>
@@ -95,17 +145,21 @@
     </div>
 
 
-    <!-- =====================================================
-         SUMMARY
-         ===================================================== -->
+    <!-- =========================================================
+         SUMMARY CARDS
+         ========================================================= -->
 
-    <div class="grid grid-cols-1 gap-4 mb-6 sm:grid-cols-2 xl:grid-cols-4">
+    <div class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
 
-        <!-- Total Students -->
+
+        <!-- Total -->
+
         <div class="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800">
+
             <div class="flex items-center justify-between">
 
                 <div>
+
                     <p class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
                         Total Students
                     </p>
@@ -116,9 +170,11 @@
                     >
                         0
                     </p>
+
                 </div>
 
                 <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-700">
+
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="19"
@@ -135,17 +191,22 @@
                         <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
                         <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                     </svg>
+
                 </div>
 
             </div>
+
         </div>
 
 
-        <!-- Active Students -->
+        <!-- Active -->
+
         <div class="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800">
+
             <div class="flex items-center justify-between">
 
                 <div>
+
                     <p class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
                         Active Students
                     </p>
@@ -156,9 +217,11 @@
                     >
                         0
                     </p>
+
                 </div>
 
                 <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400">
+
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="19"
@@ -172,17 +235,22 @@
                     >
                         <path d="M20 6 9 17l-5-5"></path>
                     </svg>
+
                 </div>
 
             </div>
+
         </div>
 
 
-        <!-- Inactive Students -->
+        <!-- Inactive -->
+
         <div class="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800">
+
             <div class="flex items-center justify-between">
 
                 <div>
+
                     <p class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
                         Inactive Students
                     </p>
@@ -193,9 +261,11 @@
                     >
                         0
                     </p>
+
                 </div>
 
                 <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400">
+
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="19"
@@ -210,17 +280,22 @@
                         <circle cx="12" cy="12" r="9"></circle>
                         <path d="M8 12h8"></path>
                     </svg>
+
                 </div>
 
             </div>
+
         </div>
 
 
         <!-- Graduated -->
+
         <div class="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800">
+
             <div class="flex items-center justify-between">
 
                 <div>
+
                     <p class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
                         Graduated
                     </p>
@@ -231,9 +306,11 @@
                     >
                         0
                     </p>
+
                 </div>
 
                 <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400">
+
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="19"
@@ -248,24 +325,28 @@
                         <path d="M22 10 12 5 2 10l10 5 10-5Z"></path>
                         <path d="M6 12v5c3 2 9 2 12 0v-5"></path>
                     </svg>
+
                 </div>
 
             </div>
+
         </div>
 
     </div>
 
 
-    <!-- =====================================================
-         FILTER / SEARCH TOOLBAR
-         ===================================================== -->
+    <!-- =========================================================
+         SEARCH + FILTERS
+         ========================================================= -->
 
     <div class="mb-4 rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800">
 
-        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-12">
+        <div class="grid grid-cols-1 gap-3 lg:grid-cols-12">
+
 
             <!-- Search -->
-            <div class="sm:col-span-2 lg:col-span-5">
+
+            <div class="lg:col-span-5">
 
                 <label
                     for="studentSearch"
@@ -306,7 +387,8 @@
 
 
             <!-- Department -->
-            <div class="sm:col-span-1 lg:col-span-2">
+
+            <div class="lg:col-span-3">
 
                 <label
                     for="studentDepartmentFilter"
@@ -319,16 +401,19 @@
                     id="studentDepartmentFilter"
                     class="h-10 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm outline-none transition focus:border-[#720E24] focus:ring-1 focus:ring-[#720E24] dark:border-slate-600 dark:bg-slate-900 dark:text-white"
                 >
+
                     <option value="">
                         All Departments
                     </option>
+
                 </select>
 
             </div>
 
 
             <!-- Semester -->
-            <div class="sm:col-span-1 lg:col-span-2">
+
+            <div class="lg:col-span-2">
 
                 <label
                     for="studentSemesterFilter"
@@ -341,16 +426,19 @@
                     id="studentSemesterFilter"
                     class="h-10 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm outline-none transition focus:border-[#720E24] focus:ring-1 focus:ring-[#720E24] dark:border-slate-600 dark:bg-slate-900 dark:text-white"
                 >
+
                     <option value="">
                         All Semesters
                     </option>
+
                 </select>
 
             </div>
 
 
             <!-- Status -->
-            <div class="sm:col-span-1 lg:col-span-2">
+
+            <div class="lg:col-span-2">
 
                 <label
                     for="studentStatusFilter"
@@ -363,6 +451,7 @@
                     id="studentStatusFilter"
                     class="h-10 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm outline-none transition focus:border-[#720E24] focus:ring-1 focus:ring-[#720E24] dark:border-slate-600 dark:bg-slate-900 dark:text-white"
                 >
+
                     <option value="">
                         All Status
                     </option>
@@ -378,39 +467,43 @@
                     <option value="GRADUATED">
                         Graduated
                     </option>
+
                 </select>
 
             </div>
 
+        </div>
 
-            <!-- Reset -->
-            <div class="sm:col-span-1 lg:col-span-1">
 
-                <button
-                    type="button"
-                    id="resetStudentFiltersBtn"
-                    class="h-10 w-full rounded-lg border border-slate-300 bg-white px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-700"
-                >
-                    Reset
-                </button>
+        <!-- Reset -->
 
-            </div>
+        <div class="mt-3 flex justify-end">
+
+            <button
+                type="button"
+                id="resetStudentFiltersBtn"
+                class="h-10 rounded-lg border border-slate-300 bg-white px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-700"
+            >
+                Reset Filters
+            </button>
 
         </div>
 
     </div>
 
 
-    <!-- =====================================================
+    <!-- =========================================================
          STUDENT TABLE
-         ===================================================== -->
+         ========================================================= -->
 
     <div class="rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-800">
 
-        <!-- Table Header -->
+        <!-- Table heading -->
+
         <div class="flex flex-col gap-3 border-b border-slate-200 px-4 py-4 sm:flex-row sm:items-center sm:justify-between dark:border-slate-700">
 
             <div>
+
                 <h2 class="text-base font-semibold">
                     Registered Students
                 </h2>
@@ -418,22 +511,27 @@
                 <p class="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
                     Students registered in the examination management system.
                 </p>
+
             </div>
 
             <div class="text-xs text-slate-500 dark:text-slate-400">
+
                 <span id="studentResultCount">
                     0
                 </span>
+
                 students
+
             </div>
 
         </div>
 
 
-        <!-- Contained horizontal scroll -->
+        <!-- Table -->
+
         <div class="student-table-scroll overflow-x-auto">
 
-            <table class="w-full min-w-[760px] text-left">
+            <table class="w-full min-w-[950px] text-left">
 
                 <thead class="border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-900/60">
 
@@ -460,6 +558,10 @@
                         </th>
 
                         <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                            Academic Year
+                        </th>
+
+                        <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
                             Status
                         </th>
 
@@ -476,7 +578,6 @@
                     id="studentsTableBody"
                     class="divide-y divide-slate-100 dark:divide-slate-700"
                 >
-                    <!-- Students loaded by JavaScript -->
                 </tbody>
 
             </table>
@@ -484,7 +585,8 @@
         </div>
 
 
-        <!-- Empty State -->
+        <!-- Empty -->
+
         <div
             id="studentsEmptyState"
             class="hidden px-6 py-14 text-center"
@@ -522,7 +624,8 @@
         </div>
 
 
-        <!-- Loading State -->
+        <!-- Loading -->
+
         <div
             id="studentsLoadingState"
             class="hidden px-6 py-14 text-center"
@@ -539,9 +642,9 @@
     </div>
 
 
-    <!-- =====================================================
+    <!-- =========================================================
          ADD / EDIT STUDENT MODAL
-         ===================================================== -->
+         ========================================================= -->
 
     <div
         id="studentModal"
@@ -555,10 +658,12 @@
             aria-labelledby="studentModalTitle"
         >
 
-            <!-- Modal Header -->
+            <!-- Header -->
+
             <div class="flex items-center justify-between border-b border-slate-200 px-5 py-4 dark:border-slate-700">
 
                 <div>
+
                     <h2
                         id="studentModalTitle"
                         class="text-lg font-semibold"
@@ -569,7 +674,9 @@
                     <p class="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
                         Register a student with their academic information.
                     </p>
+
                 </div>
+
 
                 <button
                     type="button"
@@ -577,6 +684,7 @@
                     class="flex h-9 w-9 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-700 dark:hover:text-slate-200"
                     aria-label="Close"
                 >
+
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="19"
@@ -591,12 +699,14 @@
                         <path d="M18 6 6 18"></path>
                         <path d="m6 6 12 12"></path>
                     </svg>
+
                 </button>
 
             </div>
 
 
-            <!-- Modal Form -->
+            <!-- Form -->
+
             <form
                 id="studentForm"
                 novalidate
@@ -604,7 +714,9 @@
 
                 <div class="p-5">
 
-                    <!-- Student Information -->
+
+                    <!-- Student information -->
+
                     <div class="mb-6">
 
                         <h3 class="mb-3 text-sm font-semibold">
@@ -613,8 +725,11 @@
 
                         <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
 
+
                             <!-- Student ID -->
+
                             <div>
+
                                 <label
                                     for="studentId"
                                     class="mb-1.5 block text-sm font-medium"
@@ -628,19 +743,22 @@
                                     id="studentId"
                                     name="student_id"
                                     maxlength="30"
-                                    required
-                                    placeholder="e.g. ATU-2026-001"
-                                    class="student-form-input"
+                                    readonly
+                                    placeholder="Generated automatically"
+                                    class="student-form-input bg-slate-100 dark:bg-slate-700"
                                 >
 
                                 <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                                    Enter the official Student ID manually.
+                                    Student ID is generated automatically.
                                 </p>
+
                             </div>
 
 
                             <!-- First Name -->
+
                             <div>
+
                                 <label
                                     for="firstName"
                                     class="mb-1.5 block text-sm font-medium"
@@ -655,13 +773,17 @@
                                     name="first_name"
                                     maxlength="100"
                                     required
+                                    autocomplete="given-name"
                                     class="student-form-input"
                                 >
+
                             </div>
 
 
                             <!-- Middle Name -->
+
                             <div>
+
                                 <label
                                     for="middleName"
                                     class="mb-1.5 block text-sm font-medium"
@@ -674,13 +796,17 @@
                                     id="middleName"
                                     name="middle_name"
                                     maxlength="100"
+                                    autocomplete="additional-name"
                                     class="student-form-input"
                                 >
+
                             </div>
 
 
                             <!-- Last Name -->
+
                             <div>
+
                                 <label
                                     for="lastName"
                                     class="mb-1.5 block text-sm font-medium"
@@ -695,13 +821,17 @@
                                     name="last_name"
                                     maxlength="100"
                                     required
+                                    autocomplete="family-name"
                                     class="student-form-input"
                                 >
+
                             </div>
 
 
                             <!-- Gender -->
+
                             <div>
+
                                 <label
                                     for="studentGender"
                                     class="mb-1.5 block text-sm font-medium"
@@ -716,6 +846,7 @@
                                     required
                                     class="student-form-input"
                                 >
+
                                     <option value="">
                                         Select Gender
                                     </option>
@@ -727,65 +858,9 @@
                                     <option value="FEMALE">
                                         Female
                                     </option>
+
                                 </select>
-                            </div>
 
-
-                            <!-- Date of Birth -->
-                            <div>
-                                <label
-                                    for="studentDateOfBirth"
-                                    class="mb-1.5 block text-sm font-medium"
-                                >
-                                    Date of Birth
-                                </label>
-
-                                <input
-                                    type="date"
-                                    id="studentDateOfBirth"
-                                    name="date_of_birth"
-                                    class="student-form-input"
-                                >
-                            </div>
-
-
-                            <!-- Phone -->
-                            <div>
-                                <label
-                                    for="studentPhone"
-                                    class="mb-1.5 block text-sm font-medium"
-                                >
-                                    Phone
-                                </label>
-
-                                <input
-                                    type="tel"
-                                    id="studentPhone"
-                                    name="phone"
-                                    maxlength="30"
-                                    placeholder="Phone number"
-                                    class="student-form-input"
-                                >
-                            </div>
-
-
-                            <!-- Address -->
-                            <div class="md:col-span-2">
-                                <label
-                                    for="studentAddress"
-                                    class="mb-1.5 block text-sm font-medium"
-                                >
-                                    Address
-                                </label>
-
-                                <input
-                                    type="text"
-                                    id="studentAddress"
-                                    name="address"
-                                    maxlength="255"
-                                    placeholder="Student address"
-                                    class="student-form-input"
-                                >
                             </div>
 
                         </div>
@@ -793,7 +868,8 @@
                     </div>
 
 
-                    <!-- Academic Information -->
+                    <!-- Academic information -->
+
                     <div>
 
                         <h3 class="mb-3 text-sm font-semibold">
@@ -802,31 +878,11 @@
 
                         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
 
-                            <!-- Faculty -->
-                            <div>
-                                <label
-                                    for="studentFaculty"
-                                    class="mb-1.5 block text-sm font-medium"
-                                >
-                                    Faculty
-                                    <span class="text-red-500">*</span>
-                                </label>
-
-                                <select
-                                    id="studentFaculty"
-                                    name="faculty"
-                                    required
-                                    class="student-form-input"
-                                >
-                                    <option value="">
-                                        Select Faculty
-                                    </option>
-                                </select>
-                            </div>
-
 
                             <!-- Department -->
+
                             <div>
+
                                 <label
                                     for="studentDepartment"
                                     class="mb-1.5 block text-sm font-medium"
@@ -840,17 +896,25 @@
                                     name="department"
                                     required
                                     class="student-form-input"
-                                    disabled
                                 >
+
                                     <option value="">
                                         Select Department
                                     </option>
+
                                 </select>
+
+                                <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                                    Faculty is determined automatically from the selected department.
+                                </p>
+
                             </div>
 
 
                             <!-- Semester -->
+
                             <div>
+
                                 <label
                                     for="studentSemester"
                                     class="mb-1.5 block text-sm font-medium"
@@ -865,78 +929,51 @@
                                     required
                                     class="student-form-input"
                                 >
+
                                     <option value="">
                                         Select Semester
                                     </option>
+
                                 </select>
+
                             </div>
 
 
                             <!-- Academic Year -->
+
                             <div>
+
                                 <label
                                     for="studentAcademicYear"
                                     class="mb-1.5 block text-sm font-medium"
                                 >
                                     Academic Year
-                                    <span class="text-red-500">*</span>
                                 </label>
 
                                 <select
                                     id="studentAcademicYear"
                                     name="academic_year"
-                                    required
-                                    class="student-form-input"
+                                    disabled
+                                    class="student-form-input bg-slate-100 dark:bg-slate-700"
                                 >
+
                                     <option value="">
-                                        Select Academic Year
+                                        Current Academic Year
                                     </option>
+
                                 </select>
-                            </div>
 
+                                <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                                    Academic Year is managed automatically.
+                                </p>
 
-                            <!-- Program -->
-                            <div>
-                                <label
-                                    for="studentProgram"
-                                    class="mb-1.5 block text-sm font-medium"
-                                >
-                                    Program
-                                    <span class="text-red-500">*</span>
-                                </label>
-
-                                <input
-                                    type="text"
-                                    id="studentProgram"
-                                    name="program"
-                                    maxlength="150"
-                                    required
-                                    placeholder="e.g. Software Engineering"
-                                    class="student-form-input"
-                                >
-                            </div>
-
-
-                            <!-- Admission Date -->
-                            <div>
-                                <label
-                                    for="studentAdmissionDate"
-                                    class="mb-1.5 block text-sm font-medium"
-                                >
-                                    Admission Date
-                                </label>
-
-                                <input
-                                    type="date"
-                                    id="studentAdmissionDate"
-                                    name="admission_date"
-                                    class="student-form-input"
-                                >
                             </div>
 
 
                             <!-- Status -->
+
                             <div>
+
                                 <label
                                     for="studentStatus"
                                     class="mb-1.5 block text-sm font-medium"
@@ -951,6 +988,7 @@
                                     required
                                     class="student-form-input"
                                 >
+
                                     <option value="ACTIVE">
                                         Active
                                     </option>
@@ -962,17 +1000,65 @@
                                     <option value="GRADUATED">
                                         Graduated
                                     </option>
+
                                 </select>
+
                             </div>
 
                         </div>
 
                     </div>
 
+
+                    <!-- Compatibility fields -->
+
+                    <input
+                        type="hidden"
+                        id="studentFaculty"
+                        name="faculty"
+                        value=""
+                    >
+
+                    <input
+                        type="hidden"
+                        id="studentProgram"
+                        name="program"
+                        value=""
+                    >
+
+                    <input
+                        type="hidden"
+                        id="studentDateOfBirth"
+                        name="date_of_birth"
+                        value=""
+                    >
+
+                    <input
+                        type="hidden"
+                        id="studentPhone"
+                        name="phone"
+                        value=""
+                    >
+
+                    <input
+                        type="hidden"
+                        id="studentAddress"
+                        name="address"
+                        value=""
+                    >
+
+                    <input
+                        type="hidden"
+                        id="studentAdmissionDate"
+                        name="admission_date"
+                        value=""
+                    >
+
                 </div>
 
 
-                <!-- Modal Footer -->
+                <!-- Footer -->
+
                 <div class="flex flex-col-reverse gap-2 border-t border-slate-200 px-5 py-4 sm:flex-row sm:justify-end dark:border-slate-700">
 
                     <button
@@ -1001,9 +1087,223 @@
     </div>
 
 
-    <!-- =====================================================
-         DELETE CONFIRMATION MODAL
-         ===================================================== -->
+    <!-- =========================================================
+         VIEW STUDENT MODAL
+         ========================================================= -->
+
+    <div
+        id="viewStudentModal"
+        class="fixed inset-0 z-[55] hidden items-center justify-center bg-black/50 p-4"
+    >
+
+        <div
+            class="w-full max-w-2xl rounded-xl bg-white shadow-xl dark:bg-slate-800"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="viewStudentModalTitle"
+        >
+
+            <!-- Header -->
+
+            <div class="flex items-center justify-between border-b border-slate-200 px-5 py-4 dark:border-slate-700">
+
+                <div>
+
+                    <h2
+                        id="viewStudentModalTitle"
+                        class="text-lg font-semibold"
+                    >
+                        Student Details
+                    </h2>
+
+                    <p class="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                        View student academic information.
+                    </p>
+
+                </div>
+
+                <button
+                    type="button"
+                    id="closeViewStudentModalBtn"
+                    class="flex h-9 w-9 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-700 dark:hover:text-slate-200"
+                    aria-label="Close"
+                >
+
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="19"
+                        height="19"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <path d="M18 6 6 18"></path>
+                        <path d="m6 6 12 12"></path>
+                    </svg>
+
+                </button>
+
+            </div>
+
+
+            <!-- Details -->
+
+            <div class="grid grid-cols-1 gap-4 p-5 sm:grid-cols-2">
+
+
+                <!-- Student ID -->
+
+                <div class="rounded-lg border border-slate-200 p-4 dark:border-slate-700">
+
+                    <p class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                        Student ID
+                    </p>
+
+                    <p
+                        id="viewStudentId"
+                        class="mt-1 text-sm font-semibold"
+                    >
+                        —
+                    </p>
+
+                </div>
+
+
+                <!-- Name -->
+
+                <div class="rounded-lg border border-slate-200 p-4 dark:border-slate-700">
+
+                    <p class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                        Full Name
+                    </p>
+
+                    <p
+                        id="viewStudentName"
+                        class="mt-1 text-sm font-semibold"
+                    >
+                        —
+                    </p>
+
+                </div>
+
+
+                <!-- Gender -->
+
+                <div class="rounded-lg border border-slate-200 p-4 dark:border-slate-700">
+
+                    <p class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                        Gender
+                    </p>
+
+                    <p
+                        id="viewStudentGender"
+                        class="mt-1 text-sm font-semibold"
+                    >
+                        —
+                    </p>
+
+                </div>
+
+
+                <!-- Department -->
+
+                <div class="rounded-lg border border-slate-200 p-4 dark:border-slate-700">
+
+                    <p class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                        Department
+                    </p>
+
+                    <p
+                        id="viewStudentDepartment"
+                        class="mt-1 text-sm font-semibold"
+                    >
+                        —
+                    </p>
+
+                </div>
+
+
+                <!-- Semester -->
+
+                <div class="rounded-lg border border-slate-200 p-4 dark:border-slate-700">
+
+                    <p class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                        Semester
+                    </p>
+
+                    <p
+                        id="viewStudentSemester"
+                        class="mt-1 text-sm font-semibold"
+                    >
+                        —
+                    </p>
+
+                </div>
+
+
+                <!-- Academic Year -->
+
+                <div class="rounded-lg border border-slate-200 p-4 dark:border-slate-700">
+
+                    <p class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                        Academic Year
+                    </p>
+
+                    <p
+                        id="viewStudentAcademicYear"
+                        class="mt-1 text-sm font-semibold"
+                    >
+                        —
+                    </p>
+
+                </div>
+
+
+                <!-- Status -->
+
+                <div class="rounded-lg border border-slate-200 p-4 dark:border-slate-700 sm:col-span-2">
+
+                    <p class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                        Status
+                    </p>
+
+                    <p
+                        id="viewStudentStatus"
+                        class="mt-1 text-sm font-semibold"
+                    >
+                        —
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- Footer -->
+
+            <div class="flex justify-end border-t border-slate-200 px-5 py-4 dark:border-slate-700">
+
+                <button
+                    type="button"
+                    id="closeViewStudentBtn"
+                    class="rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-700"
+                >
+                    Close
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         DELETE STUDENT MODAL
+         ========================================================= -->
 
     <div
         id="deleteStudentModal"
@@ -1036,20 +1336,27 @@
 
                 </div>
 
+
                 <h2 class="mt-4 text-lg font-semibold">
                     Delete Student
                 </h2>
 
+
                 <p class="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">
+
                     Are you sure you want to delete
+
                     <strong
                         id="deleteStudentName"
                         class="font-semibold text-slate-700 dark:text-slate-200"
                     ></strong>?
+
                     This action cannot be undone.
+
                 </p>
 
             </div>
+
 
             <div class="flex flex-col-reverse gap-2 border-t border-slate-200 px-5 py-4 sm:flex-row sm:justify-end dark:border-slate-700">
 
@@ -1060,6 +1367,7 @@
                 >
                     Cancel
                 </button>
+
 
                 <button
                     type="button"
@@ -1076,9 +1384,9 @@
     </div>
 
 
-    <!-- =====================================================
+    <!-- =========================================================
          UPLOAD STUDENTS MODAL
-         ===================================================== -->
+         ========================================================= -->
 
     <div
         id="uploadStudentsModal"
@@ -1087,9 +1395,13 @@
 
         <div class="w-full max-w-lg rounded-xl bg-white shadow-xl dark:bg-slate-800">
 
+
+            <!-- Header -->
+
             <div class="flex items-center justify-between border-b border-slate-200 px-5 py-4 dark:border-slate-700">
 
                 <div>
+
                     <h2 class="text-lg font-semibold">
                         Upload Students
                     </h2>
@@ -1097,7 +1409,9 @@
                     <p class="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
                         Import multiple student records from a file.
                     </p>
+
                 </div>
+
 
                 <button
                     type="button"
@@ -1105,6 +1419,7 @@
                     class="flex h-9 w-9 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 dark:hover:bg-slate-700"
                     aria-label="Close"
                 >
+
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="19"
@@ -1119,10 +1434,13 @@
                         <path d="M18 6 6 18"></path>
                         <path d="m6 6 12 12"></path>
                     </svg>
+
                 </button>
 
             </div>
 
+
+            <!-- Body -->
 
             <div class="p-5">
 
@@ -1141,17 +1459,21 @@
                         class="mx-auto text-slate-400"
                     >
                         <path d="M12 3v12"></path>
-                        <path d="m7 8 5-5 5 5"></path>
+                        <path d="m7 8-5 5 5 5"></path>
+                        <path d="M12 3v12"></path>
                         <path d="M5 21h14"></path>
                     </svg>
+
 
                     <h3 class="mt-3 text-sm font-semibold">
                         Select Student File
                     </h3>
 
+
                     <p class="mt-1 text-xs leading-5 text-slate-500 dark:text-slate-400">
                         CSV or Excel files can be imported.
                     </p>
+
 
                     <input
                         type="file"
@@ -1162,6 +1484,7 @@
 
                 </div>
 
+
                 <p class="mt-3 text-xs leading-5 text-slate-500 dark:text-slate-400">
                     The upload process will validate Student IDs,
                     academic relationships, duplicate records,
@@ -1170,6 +1493,8 @@
 
             </div>
 
+
+            <!-- Footer -->
 
             <div class="flex flex-col-reverse gap-2 border-t border-slate-200 px-5 py-4 sm:flex-row sm:justify-end dark:border-slate-700">
 
@@ -1180,6 +1505,7 @@
                 >
                     Cancel
                 </button>
+
 
                 <button
                     type="button"
@@ -1202,7 +1528,9 @@
 
 
 {% block extra_js %}
-    <script
-        src="{% static 'js/student-management/students.js' %}"
-    ></script>
+
+<script
+    src="{% static 'js/student-management/students.js' %}"
+></script>
+
 {% endblock extra_js %}
